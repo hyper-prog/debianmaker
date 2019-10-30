@@ -1,7 +1,7 @@
 # debianmaker
-Scripts to create a debian system from a live environment with deboostrap
+Scripts to create a debian system from a live environment with debootstrap
 
-This script can deboostrap a Debian Buster system on ZFS filesystem.
+This script can debootstrap a Debian Buster system on ZFS filesystem.
 
 Using
 ------
