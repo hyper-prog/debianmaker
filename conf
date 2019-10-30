@@ -1,0 +1,37 @@
+#!/bin/bash
+
+# Debian bootstrapper
+# Author: Peter Deak (hyper80@gmail.com)
+# License: GPL,  No warrantly, use at you own risk!
+
+#export DONTRUNCONF="dontrunconf"
+
+export DONTASK=""             # Can be "dontask"
+export LANG=C
+export LC_CTYPE=C
+export SERVERNAME="busterz"
+export DOMAIN="local"         # domain without hostname
+export MAC=""                 # 00:12:23:ab:cd:ef
+export IFACE="ether0"         # lan0 ether0 wan1
+export IPSRC="dhcp"           # "dhcp" or "static"
+export IPADDRESS="192.168.1.1/24"
+export GWADDRESS="192.168.1.254"
+export DNSADDRESS="192.168.1.254"
+export BOOT="BIOS"            # "BIOS" or "EFI"
+export DISKS=""               # Disk block devices "sda sdb sdc" which meand /dev/sda and /dev/sdb ...
+export RAIDSPEC=""            # "" or "mirror" or "raidz" or "raidz1" or "raidz2" or "raidz3"
+export POOL="zfs_pool"
+export ZFSCOMP="off"          # "off" or "lz4"
+export DIST="debian"
+export RELEASE="buster"
+export PACKAGES=""            # extra packages to install
+export TZAREA="Europe"
+export TZNAME="Budapest"
+export KEYMODEL="pc105"
+export KEYLAYOUT="hu"
+export KEYVARIANT=""
+export NEEDDOCKER="n"         # "n" or "y"
+export SSHPERMITROOT="yes"    # "no" or "prohibit-password" or "yes"
+
+export ROOTPSWD=""
+
