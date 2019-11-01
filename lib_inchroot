@@ -1,25 +1,20 @@
 #!/bin/bash
 
 function dm_grub_setbiosboot {
-    echo ">>> Start dm_grub_setbiosboot"
     DISKDEVS=$(for disk in ${DISKS} ; do echo -n "/dev/${disk} " ; done | sed -e 's@ /@, /@g')
     echo "grub-pc grub-pc/install_devices multiselect ${DISKDEVS}" | debconf-set-selections
     apt -y install grub-pc
     update-initramfs -u -k all
     update-grub
-    echo ">>> End dm_grub_setbiosboot"
 }
 
 function dm_swap_swaponzfs {
-    echo ">>> Start dm_swap_swaponzfs"
     zfs create -V 1G -b $(getconf PAGESIZE) -o compression=off -o logbias=throughput -o sync=always -o primarycache=metadata -o secondarycache=none -o com.sun:auto-snapshot=false ${POOL}/swap
     mkswap /dev/zvol/${POOL}/swap
     echo "/dev/zvol/${POOL}/swap none swap defaults 0 0" >> /etc/fstab
-    echo ">>> End dm_swap_swaponzfs"
 }
 
 function dm_zfs_setzfsparameters {
-    echo ">>> Start dm_zfs_setzfsparameters"
     zfs set quota=1G ${POOL}/tmp
     zfs set quota=11G ${POOL}/var
     zfs set quota=3G ${POOL}/var/cache
@@ -37,7 +32,6 @@ function dm_zfs_setzfsparameters {
     zfs set reservation=1G ${POOL}/var/log
 
     zfs set acltype=posixacl ${POOL}
-    echo ">>> End dm_zfs_setzfsparameters"
 }
 
 function dm_set_rootpassword {
