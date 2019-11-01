@@ -1,0 +1,379 @@
+#!/bin/bash
+
+function dm_ask_servername {
+    local SERVERNAME_R
+    read -p "Hostname of the computer [${SERVERNAME}]:" SERVERNAME_R
+    if test -n ${SERVERNAME_R}
+    then
+        SERVERNAME=${SERVERNAME_R}
+    fi
+}
+
+function dm_ask_domain {
+    local DOMAIN_R
+    read -p "Network domain name [${DOMAIN}]:" DOMAIN_R
+    if test -n "${DOMAIN_R}"
+    then
+        DOMAIN="${DOMAIN_R}"
+    fi
+}
+
+function dm_ask_macaddress {
+    local MAC_R
+    if test -z "${MAC}"
+    then
+        MAC=$(ip addr | grep link/ether | awk '{print $2}')
+    fi
+    read -p "MAC address of the configurable network interface [${MAC}]:" MAC_R
+    if test -n "${MAC_R}"
+    then
+        MAC="${MAC_R}"
+    fi
+}
+
+function dm_ask_ifacename {
+    local IFACE_R
+    read -p "Name of the configurable network interface [${IFACE}]:" IFACE_R
+    if test -n "${IFACE_R}"
+    then
+        IFACE="${IFACE_R}"
+    fi
+}
+
+function dm_ask_ipsettings {
+    local IPSRC_R
+    local IPADDRESS_R
+    local GWADDRESS_R
+    local DNSADDRESS_R
+    read -p "The configurable network interface obtain ip <dhcp | static > [${IPSRC}]:" IPSRC_R
+    if test -n "${IPSRC_R}"
+    then
+        if test "${IPSRC_R}" = "static"
+        then
+            IPSRC="${IPSRC_R}"
+        fi
+        if test "${IPSRC_R}" = "dhcp"
+        then
+            IPSRC="${IPSRC_R}"
+        fi
+    fi
+
+    if test "${IPSRC_R}" = "static"
+    then
+        read -p "IP address and mask of the network interface [${IPADDRESS}]:" IPADDRESS_R
+        if test -n "${IPADDRESS_R}"
+        then
+            IPADDRESS="${IPADDRESS_R}"
+        fi
+
+        read -p "Gateway address [${GWADDRESS}]:" GWADDRESS_R
+        if test -n "${GWADDRESS_R}"
+        then
+            GWADDRESS="${GWADDRESS_R}"
+        fi
+
+        read -p "DNS server address [${DNSADDRESS}]:" DNSADDRESS_R
+        if test -n "${DNSADDRESS_R}"
+        then
+            DNSADDRESS="${DNSADDRESS_R}"
+        fi
+    fi
+}
+
+function dm_ask_disks {
+    local DISKS_R
+    local DISKRAWLIST
+    local DISKLINELIST
+    if test -z "${DISKS}"
+    then
+        DISKRAWLIST=$(cat /proc/partitions | grep -v "major" | grep -v "^\s*$" | awk '{print $4}' | grep '^sd[a-z]$')
+        DISKLINELIST=""
+        for disk in ${DISKRAWLIST}
+        do
+            if test "${DISKLINELIST}" "!=" ""
+            then
+               DISKLINELIST="${DISKLINELIST} "
+            fi
+            DISKLINELIST="${DISKLINELIST}${disk}"
+        done
+        DISKS="${DISKLINELIST}"
+    fi
+    read -p "List of the disks under /dev to use [${DISKS}]:" DISKS_R
+    if test -n "${DISKS_R}"
+    then
+        DISKS="${DISKS_R}"
+    fi
+}
+
+function dm_ask_raidspec {
+    local DISKNUM
+    local RAIDSPEC_R
+    DISKNUM=$(echo "${DISKS}"|wc -w)
+
+    if test "${DISKNUM}" "-eq" "1"
+    then
+        RAIDSPEC=""
+    fi
+    if test "${DISKNUM}" "-eq" "2"
+    then
+        RAIDSPEC="mirror"
+    fi
+    if test "${DISKNUM}" "-ge" "3"
+    then
+        RAIDSPEC="raidz"
+    fi
+    read -p "Raid type of the disk array <empty|mirror|raidz> [${RAIDSPEC}]:" RAIDSPEC_R
+    if test -n "${RAIDSPEC_R}"
+    then
+        RAIDSPEC="${RAIDSPEC_R}"
+    fi
+}
+
+function dm_ask_poolname {
+    local POOL_R
+    if test "${POOL}" "=" "zfs_pool"
+    then
+        POOL="${SERVERNAME}_pool"
+    fi
+    read -p "The zfs pool name [${POOL}]:" POOL_R
+    if test -n "${POOL_R}"
+    then
+        POOL="${POOL_R}"
+    fi
+}
+
+function dm_ask_fscompression {
+    local ZFSCOMP_R
+    read -p "The zfs compression <off|lz4> [${ZFSCOMP}]:" ZFSCOMP_R
+    if test -n "${ZFSCOMP_R}"
+    then
+        ZFSCOMP="${ZFSCOMP_R}"
+    fi
+}
+
+function dm_ask_extrapackages {
+    local PACKAGES_R
+    read -p "Extra packages to install [${PACKAGES}]:" PACKAGES_R
+    if test -n "${PACKAGES_R}"
+    then
+        PACKAGES="${PACKAGES_R}"
+    fi
+}
+
+function dm_ask_timezones {
+    local TZAREA_R
+    local TZNAME_R
+    read -p "Timezone area [${TZAREA}]:" TZAREA_R
+    if test -n "${TZAREA_R}"
+    then
+        TZAREA="${TZAREA_R}"
+    fi
+
+    read -p "Timezone name [${TZNAME}]:" TZNAME_R
+    if test -n "${TZNAME_R}"
+    then
+        TZNAME="${TZNAME_R}"
+    fi
+}
+
+function dm_ask_keyboard {
+    local KEYMODEL_R
+    local KEYLAYOUT_R
+    local KEYVARIANT_R
+    read -p "Keyboard model [${KEYMODEL}]:" KEYMODEL_R
+    if test -n "${KEYMODEL_R}"
+    then
+        KEYMODEL="${KEYMODEL_R}"
+    fi
+
+    read -p "Keyboard layout [${KEYLAYOUT}]:" KEYLAYOUT_R
+    if test -n "${KEYLAYOUT_R}"
+    then
+        KEYLAYOUT="${KEYLAYOUT_R}"
+    fi
+
+    read -p "Keyboard variant [${KEYVARIANT}]:" KEYVARIANT_R
+    if test -n "${KEYVARIANT_R}"
+    then
+        KEYVARIANT="${KEYVARIANT_R}"
+    fi
+}
+
+function dm_ask_docker {
+    local NEEDDOCKER_R
+    read -p "Do you need docker to be installed? <y|n> [${NEEDDOCKER}]:" NEEDDOCKER_R
+    if test -n "${NEEDDOCKER_R}"
+    then
+        NEEDDOCKER="${NEEDDOCKER_R}"
+    fi
+}
+
+function dm_ask_password {
+    local r1pwd
+    local r2pwd
+    read -s -p "Password for root:" r1pwd
+    echo -e "\n"
+    read -s -p "Password for root again:" r2pwd
+
+    if test "${r1pwd}" = "${r2pwd}"
+    then
+        ROOTPSWD="${r1pwd}"
+    else
+        echo -e "\nPassword mismatch, exiting..."
+        exit 1
+    fi
+}
+
+function dm_ask_settings {
+    dm_ask_servername
+    dm_ask_domain
+    dm_ask_macaddress
+    dm_ask_ifacename
+    dm_ask_ipsettings
+    dm_ask_disks
+    dm_ask_raidspec
+    dm_ask_poolname
+    dm_ask_fscompression
+    dm_ask_extrapackages
+    dm_ask_timezones
+    dm_ask_keyboard
+    dm_ask_docker
+    dm_ask_password
+}
+
+function dm_zfs_zfsforlive {
+    local KVER
+    local KREL
+    KVER=$(dpkg -l linux-image-amd64-grml | tail -1 | cut -d' ' -f4)
+    KREL=$(uname -r)
+    apt -y --allow-downgrades install linux-libc-dev:amd64=$KVER linux-headers-${KREL}=${KVER}
+    apt -y install zfsutils-linux zfs-zed dkms zfs-dkms spl-dkms spl
+    modprobe zfs
+}
+
+function dm_zfs_makefilesystem {
+    PARTS=$(for disk in ${DISKS} ; do echo -n "/dev/disk/by-partlabel/${disk}2-zfs "; done)
+
+    zpool create -f \
+        -o ashift=12 \
+        -O atime=off \
+        -O canmount=off \
+        -O compression=${ZFSCOMP} \
+        -O normalization=formD \
+        -O mountpoint=/ \
+        -R /target ${POOL} ${RAIDSPEC} ${PARTS}
+
+    sleep 1
+    echo "================== ZPOOL CREATED =================="
+    zpool status
+    sleep 2
+
+    zfs create -o canmount=off -o mountpoint=none ${POOL}/ROOT
+    zfs create -o canmount=noauto -o mountpoint=/ -o exec=on -o setuid=on -o devices=on ${POOL}/ROOT/${DIST}
+    zfs mount ${POOL}/ROOT/${DIST}
+    zpool set bootfs=${POOL}/ROOT/${DIST} ${POOL}
+
+    zfs set exec=off ${POOL}
+    zfs set setuid=off ${POOL}
+    zfs set devices=off ${POOL}
+
+    zfs create -o canmount=off ${POOL}/var
+    zfs create -o canmount=off ${POOL}/var/lib
+    zfs create ${POOL}/var/lib/apt
+    zfs create -o exec=on ${POOL}/var/lib/dpkg
+    zfs create ${POOL}/var/log
+    zfs create -o com.sun:auto-snapshot=false ${POOL}/var/tmp
+    zfs create -o com.sun:auto-snapshot=false ${POOL}/var/cache
+    zfs create ${POOL}/var/spool
+    zfs create -o com.sun:auto-snapshot=false -o exec=on ${POOL}/tmp
+    zfs create -o exec=on ${POOL}/root
+    zfs create -o mountpoint=/home ${POOL}/home
+    zfs create -o mountpoint=/srv ${POOL}/srv
+}
+
+function dm_disk_partitioning {
+    for disk in ${DISKS}; do
+    sgdisk -Z \
+        -n9:-10M:0 -t9:bf07 -c9:${disk}9-Reserverd \
+        -n1:1M:+512M -t1:${PARTTYPE} -c1:${disk}1-${BOOT} \
+        -n2:0:0 -t2:bf01 -c2:${disk}2-zfs /dev/${disk}
+    done
+
+    sleep 10
+    lsblk
+    sleep 5
+    echo "Available named partitions:"
+    ls /dev/disk/by-partlabel/
+}
+
+function dm_set_hostname {
+    echo ${SERVERNAME} > /target/etc/hostname
+}
+
+function dm_set_sourceslist {
+    local FTOW
+    FTOW="/target/etc/apt/sources.list"
+    echo -e "deb http://deb.debian.org/debian/ ${RELEASE} main non-free contrib" > ${FTOW}
+    echo -e "deb http://security.debian.org/ ${RELEASE}/updates main contrib non-free" >> ${FTOW}
+    echo -e "deb http://deb.debian.org/debian/ ${RELEASE}-updates main contrib non-free" >> ${FTOW}
+}
+
+function dm_net_networksettings {
+    local FTOW
+    echo "127.0.1.1 ${SERVERNAME}.${DOMAIN} ${SERVERNAME}" >> /target/etc/hosts
+
+    FTOW="/target/etc/systemd/network/10-persistent-net.link"
+    echo -e "[Match]\nMACAddress=${MAC}\n"                > ${FTOW}
+    echo -e "[Link]\nName=${IFACE}"                       >> ${FTOW}
+
+    FTOW="/target/etc/network/interfaces"
+    echo -e "# The loopback interface"                    > ${FTOW}
+    echo -e "auto lo\niface lo inet loopback"             >> ${FTOW}
+    echo -e ""                                            >> ${FTOW}
+    echo -e "# Other interface files"                     >> ${FTOW}
+    echo -e "source-directory /etc/network/interfaces.d"  >> ${FTOW}
+
+    if test "${IPSRC}" = "static"
+    then
+        FTOW="/target/etc/network/interfaces.d/${IFACE}"
+        echo -e "allow-hotplug ${IFACE}"                 > ${FTOW}
+        echo -e "iface ${IFACE} inet static"             >> ${FTOW}
+        echo -e "\taddress ${IPADDRESS}"                 >> ${FTOW}
+        echo -e "\tgateway ${GWADDRESS}"                 >> ${FTOW}
+        echo -e "\tdns-nameservers ${DNSADDRESS}"        >> ${FTOW}
+        echo -e "\tdns-search ${DOMAIN}"                 >> ${FTOW}
+
+        echo "nameserver ${DNSADDRESS}" > /target/etc/resolv.conf
+    fi
+
+    if test "${IPSRC}" = "dhcp"
+    then
+        FTOW="/target/etc/network/interfaces.d/${IFACE}"
+        echo -e "allow-hotplug ${IFACE}"               > ${FTOW}
+        echo -e "iface ${IFACE} inet dhcp"             >> ${FTOW}
+    fi
+}
+
+function dm_console_settings {
+    local FTOW
+    FTOW="/target/etc/default/keyboard"
+    echo -e "XKBMODEL=\"${KEYMODEL}\""      > ${FTOW}
+    echo -e "XKBLAYOUT=\"${KEYLAYOUT}\""    >> ${FTOW}
+    echo -e "XKBVARIANT=\"${KEYVARIANT}\""  >> ${FTOW}
+    echo -e "XKBOPTIONS=\"\""               >> ${FTOW}
+    echo -e ""                              >> ${FTOW}
+    echo -e "BACKSPACE=\"guess\""           >> ${FTOW}
+
+    FTOW="/target/etc/default/console-setup"
+    echo -e "# CONFIGURATION FILE FOR SETUPCON" > ${FTOW}
+    echo -e ""                                  >> ${FTOW}
+    echo -e "ACTIVE_CONSOLES=\"/dev/tty[1-6]\"" >> ${FTOW}
+    echo -e ""                                  >> ${FTOW}
+    echo -e "CHARMAP=\"UTF-8\""                 >> ${FTOW}
+    echo -e ""                                  >> ${FTOW} 
+    echo -e "CODESET=\"Lat15\""                 >> ${FTOW}
+    echo -e "FONTFACE=\"Fixed\""                >> ${FTOW}
+    echo -e "FONTSIZE=\"8x16\""                 >> ${FTOW}
+    echo -e ""                                  >> ${FTOW}
+    echo -e "VIDEOMODE=\"\""                    >> ${FTOW}
+}

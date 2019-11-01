@@ -9,180 +9,12 @@ then
     . conf
 fi
 
+source ./lib
+
 # #########################################################################
 if test "${DONTASK}" "!=" "dontask"
 then
-
-    read -p "Hostname of the computer [${SERVERNAME}]:" SERVERNAME_R
-    if test -n ${SERVERNAME_R}
-    then
-        SERVERNAME=${SERVERNAME_R}
-    fi
-
-    read -p "Network domain name [${DOMAIN}]:" DOMAIN_R
-    if test -n "${DOMAIN_R}"
-    then
-        DOMAIN="${DOMAIN_R}"
-    fi
-
-    if test -z "${MAC}"
-    then
-        MAC=$(ip addr | grep link/ether | awk '{print $2}')
-    fi
-    read -p "MAC address of the configurable network interface [${MAC}]:" MAC_R
-    if test -n "${MAC_R}"
-    then
-        MAC="${MAC_R}"
-    fi
-
-    read -p "Name of the configurable network interface [${IFACE}]:" IFACE_R
-    if test -n "${IFACE_R}"
-    then
-        IFACE="${IFACE_R}"
-    fi
-
-    read -p "The configurable network interface obtain ip <dhcp | static > [${IPSRC}]:" IPSRC_R
-    if test -n "${IPSRC_R}"
-    then
-        if test "${IPSRC_R}" = "static"
-        then
-            IPSRC="${IPSRC_R}"
-        fi
-        if test "${IPSRC_R}" = "dhcp"
-        then
-            IPSRC="${IPSRC_R}"
-        fi
-    fi
-
-    if test "${IPSRC_R}" = "static"
-    then
-        read -p "IP address and mask of the network interface [${IPADDRESS}]:" IPADDRESS_R
-        if test -n "${IPADDRESS_R}"
-        then
-            IPADDRESS="${IPADDRESS_R}"
-        fi
-
-        read -p "Gateway address [${GWADDRESS}]:" GWADDRESS_R
-        if test -n "${GWADDRESS_R}"
-        then
-            GWADDRESS="${GWADDRESS_R}"
-        fi
-
-        read -p "DNS server address [${DNSADDRESS}]:" DNSADDRESS_R
-        if test -n "${DNSADDRESS_R}"
-        then
-            DNSADDRESS="${DNSADDRESS_R}"
-        fi
-    fi
-
-    if test -z "${DISKS}"
-    then
-        DISKRAWLIST=$(cat /proc/partitions | grep -v "major" | grep -v "^\s*$" | awk '{print $4}' | grep '^sd[a-z]$')
-        DISKLINELIST=""
-        for disk in ${DISKRAWLIST}
-        do
-            if test "${DISKLINELIST}" "!=" ""
-            then
-               DISKLINELIST="${DISKLINELIST} "
-            fi
-            DISKLINELIST="${DISKLINELIST}${disk}"
-        done
-        DISKS="${DISKLINELIST}"
-    fi
-    read -p "List of the disks under /dev to use [${DISKS}]:" DISKS_R
-    if test -n "${DISKS_R}"
-    then
-        DISKS="${DISKS_R}"
-    fi
-
-    DISKNUM=$(echo "${DISKS}"|wc -w)
-    if test "${DISKNUM}" "-eq" "1"
-    then
-        RAIDSPEC=""
-    fi
-    if test "${DISKNUM}" "-eq" "2"
-    then
-        RAIDSPEC="mirror"
-    fi
-    if test "${DISKNUM}" "-ge" "3"
-    then
-        RAIDSPEC="raidz"
-    fi
-    read -p "Raid type of the disk array <empty|mirror|raidz> [${RAIDSPEC}]:" RAIDSPEC_R
-    if test -n "${RAIDSPEC_R}"
-    then
-        RAIDSPEC="${RAIDSPEC_R}"
-    fi
-
-    if test "${POOL}" "=" "zfs_pool"
-    then
-        POOL="${SERVERNAME}_pool"
-    fi
-    read -p "The zfs pool name [${POOL}]:" POOL_R
-    if test -n "${POOL_R}"
-    then
-        POOL="${POOL_R}"
-    fi
-
-    read -p "The zfs compression <off|lz4> [${ZFSCOMP}]:" ZFSCOMP_R
-    if test -n "${ZFSCOMP_R}"
-    then
-        ZFSCOMP="${ZFSCOMP_R}"
-    fi
-
-    read -p "Extra packages to install [${PACKAGES}]:" PACKAGES_R
-    if test -n "${PACKAGES_R}"
-    then
-        PACKAGES="${PACKAGES_R}"
-    fi
-
-    read -p "Timezone area [${TZAREA}]:" TZAREA_R
-    if test -n "${TZAREA_R}"
-    then
-        TZAREA="${TZAREA_R}"
-    fi
-
-    read -p "Timezone name [${TZNAME}]:" TZNAME_R
-    if test -n "${TZNAME_R}"
-    then
-        TZNAME="${TZNAME_R}"
-    fi
-
-    read -p "Keyboard model [${KEYMODEL}]:" KEYMODEL_R
-    if test -n "${KEYMODEL_R}"
-    then
-        KEYMODEL="${KEYMODEL_R}"
-    fi
-
-    read -p "Keyboard layout [${KEYLAYOUT}]:" KEYLAYOUT_R
-    if test -n "${KEYLAYOUT_R}"
-    then
-        KEYLAYOUT="${KEYLAYOUT_R}"
-    fi
-
-    read -p "Keyboard variant [${KEYVARIANT}]:" KEYVARIANT_R
-    if test -n "${KEYVARIANT_R}"
-    then
-        KEYVARIANT="${KEYVARIANT_R}"
-    fi
-
-    read -p "Do you need docker to be installed? <y|n> [${NEEDDOCKER}]:" NEEDDOCKER_R
-    if test -n "${NEEDDOCKER_R}"
-    then
-        NEEDDOCKER="${NEEDDOCKER_R}"
-    fi
-
-    read -s -p "Password for root:" r1pwd
-    echo -e "\n"
-    read -s -p "Password for root again:" r2pwd
-
-    if test "${r1pwd}" = "${r2pwd}"
-    then
-        ROOTPSWD="${r1pwd}"
-    else
-        echo -e "\nPassword mismatch, exiting..."
-        exit 1
-    fi
+    dm_ask_settings
 fi
 
 export PARTTYPE="EF02" # bios
@@ -191,157 +23,36 @@ then
     PARTTYPE="EF00" # efi
 fi
 
-if type emulate;then emulate bash;fi
-
 apt update
 apt -y full-upgrade
-KVER=$(dpkg -l linux-image-amd64-grml | tail -1 | cut -d' ' -f4)
-KREL=$(uname -r)
-apt -y --allow-downgrades install linux-libc-dev:amd64=$KVER linux-headers-${KREL}=${KVER}
-apt -y install zfsutils-linux zfs-zed dkms zfs-dkms spl-dkms spl
-modprobe zfs
-for disk in ${DISKS}; do
-    sgdisk -Z \
-        -n9:-10M:0 -t9:bf07 -c9:${disk}9-Reserverd \
-        -n1:1M:+512M -t1:${PARTTYPE} -c1:${disk}1-${BOOT} \
-        -n2:0:0 -t2:bf01 -c2:${disk}2-zfs /dev/${disk}
-done
 
-sleep 10
-lsblk
-sleep 5
-echo "Available named partitions:"
-ls /dev/disk/by-partlabel/
-
-#lsblk
+dm_zfs_zfsforlive
+dm_disk_partitioning
 
 mkdir -p /target
-PARTS=$(for disk in ${DISKS} ; do echo -n "/dev/disk/by-partlabel/${disk}2-zfs "; done)
 
-zpool create -f \
-  -o ashift=12 \
-  -O atime=off \
-  -O canmount=off \
-  -O compression=${ZFSCOMP} \
-  -O normalization=formD \
-  -O mountpoint=/ \
-  -R /target ${POOL} ${RAIDSPEC} ${PARTS}
-
-sleep 1
-echo "================== ZPOOL CREATED =================="
-zpool status
-sleep 2
-
-zfs create -o canmount=off -o mountpoint=none ${POOL}/ROOT
-zfs create -o canmount=noauto -o mountpoint=/ -o exec=on -o setuid=on -o devices=on ${POOL}/ROOT/${DIST}
-zfs mount ${POOL}/ROOT/${DIST}
-zpool set bootfs=${POOL}/ROOT/${DIST} ${POOL}
-
-zfs set exec=off ${POOL}
-zfs set setuid=off ${POOL}
-zfs set devices=off ${POOL}
-
-zfs create -o canmount=off ${POOL}/var
-zfs create -o canmount=off ${POOL}/var/lib
-zfs create ${POOL}/var/lib/apt
-zfs create -o exec=on ${POOL}/var/lib/dpkg
-zfs create ${POOL}/var/log
-zfs create -o com.sun:auto-snapshot=false ${POOL}/var/tmp
-zfs create -o com.sun:auto-snapshot=false ${POOL}/var/cache
-zfs create ${POOL}/var/spool
-zfs create -o com.sun:auto-snapshot=false -o exec=on ${POOL}/tmp
-zfs create -o exec=on ${POOL}/root
-zfs create -o mountpoint=/home ${POOL}/home
-zfs create -o mountpoint=/srv ${POOL}/srv
+dm_zfs_makefilesystem
 
 chmod 1777 /target/tmp
 chmod 1777 /target/var/tmp
 
 debootstrap ${RELEASE} /target
 
-echo ${SERVERNAME} > /target/etc/hostname
-
-echo "127.0.1.1 ${SERVERNAME}.${DOMAIN} ${SERVERNAME}" >> /target/etc/hosts
-
-cat <<EOF > /target/etc/systemd/network/10-persistent-net.link
-[Match]
-MACAddress=${MAC}
-
-[Link]
-Name=${IFACE}
-EOF
-
-cat <<EOF > /target/etc/network/interfaces
-# The loopback interface
-auto lo
-iface lo inet loopback
-
-# Other interface files
-source-directory /etc/network/interfaces.d
-EOF
-
-if test "${IPSRC}" = "static"
-then
-cat <<EOF > /target/etc/network/interfaces.d/${IFACE}
-allow-hotplug ${IFACE}
-iface ${IFACE} inet statis
-	address ${IPADDRESS}
-	gateway ${GWADDRESS}
-	dns-nameservers ${DNSADDRESS}
-	dns-search ${DOMAIN}
-EOF
-
-cat <<EOF > /target/etc/resolv.conf
-nameserver ${DNSADDRESS}
-EOF
-fi
-
-
-if test "${IPSRC}" = "dhcp"
-then
-cat <<EOF > /target/etc/network/interfaces.d/${IFACE}
-allow-hotplug ${IFACE}
-iface ${IFACE} inet dhcp
-EOF
-fi
-
-cat <<EOF > /target/etc/apt/sources.list
-deb http://deb.debian.org/debian/ ${RELEASE} main non-free contrib
-deb http://security.debian.org/ ${RELEASE}/updates main contrib non-free
-deb http://deb.debian.org/debian/ ${RELEASE}-updates main contrib non-free
-EOF
-
-cat <<EOF > /target/etc/default/keyboard
-XKBMODEL="${KEYMODEL}"
-XKBLAYOUT="${KEYLAYOUT}"
-XKBVARIANT="${KEYVARIANT}"
-XKBOPTIONS=""
-
-BACKSPACE="guess"
-EOF
-
-cat <<EOF > /target/etc/default/console-setup
-# CONFIGURATION FILE FOR SETUPCON
-
-ACTIVE_CONSOLES="/dev/tty[1-6]"
-
-CHARMAP="UTF-8"
-
-CODESET="Lat15"
-FONTFACE="Fixed"
-FONTSIZE="8x16"
-
-VIDEOMODE=""
-EOF
+dm_set_hostname
+dm_net_networksettings
+dm_set_sourceslist
+dm_console_settings
 
 mount --rbind /dev /target/dev
 mount --rbind /proc /target/proc
 mount --rbind /sys /target/sys
 cp ./inchroot /target/
+cp ./lib_inchroot
 chmod +x /target/inchroot
 
 chroot /target /inchroot
 rm /target/inchroot
+rm /target/lib_inchroot
 
 umount -Rfl /target/dev
 umount -Rfl /target/sys

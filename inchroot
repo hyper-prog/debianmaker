@@ -4,9 +4,13 @@
 # Author: Peter Deak (hyper80@gmail.com)
 # License: GPL,  No warrantly, use at you own risk!
 
+source /lib_inchroot
+
 apt update
 apt -y full-upgrade
+
 export LC_CTYPE=C
+
 debconf-set-selections <<EOF
 locales locales/locales_to_be_generated multiselect en_US.UTF-8 UTF-8, hu_HU.UTF-8 UTF-8
 locales locales/default_environment_locale select C.UTF-8
@@ -24,49 +28,25 @@ dpkg-reconfigure debconf -f noninteractive -p critical
 locale-gen
 update-locale LANG=C.UTF-8
 apt -y install --no-install-recommends linux-image-amd64 linux-headers-amd64 linux-libc-dev:amd64 ${PACKAGES}
+
 apt -y install zfsutils-linux zfs-zed dkms zfs-dkms zfs-initramfs spl-dkms spl
+
 apt -y install gdisk dosfstools git rsync keyboard-configuration kbd man
 
-DISKDEVS=$(for disk in ${DISKS} ; do echo -n "/dev/${disk} " ; done | sed -e 's@ /@, /@g')
-echo "grub-pc grub-pc/install_devices multiselect ${DISKDEVS}" | debconf-set-selections
-apt -y install grub-pc
-update-initramfs -u -k all
-update-grub
+dm_grub_setbiosboot
 
-zfs create -V 1G -b $(getconf PAGESIZE) -o compression=off -o logbias=throughput -o sync=always -o primarycache=metadata -o secondarycache=none -o com.sun:auto-snapshot=false ${POOL}/swap
-mkswap /dev/zvol/${POOL}/swap
-echo "/dev/zvol/${POOL}/swap none swap defaults 0 0" >> /etc/fstab
+dm_swap_swaponzfs
 
-zfs set quota=1G ${POOL}/tmp
-zfs set quota=11G ${POOL}/var
-zfs set quota=3G ${POOL}/var/cache
-zfs set quota=1G ${POOL}/var/lib
-zfs set quota=5G ${POOL}/var/log
-zfs set quota=1G ${POOL}/var/spool
-zfs set quota=1G ${POOL}/var/tmp
-zfs set quota=10G ${POOL}/home
-zfs set refreservation=2G ${POOL}/ROOT/${DIST}
-zfs set reservation=10G ${POOL}/ROOT
-zfs set refquota=5G ${POOL}/ROOT/${DIST}
-zfs set reservation=1G ${POOL}/root
-zfs set reservation=3G ${POOL}/var
-zfs set reservation=1G ${POOL}/var/lib
-zfs set reservation=1G ${POOL}/var/log
+dm_zfs_setzfsparameters
 
-zfs set acltype=posixacl ${POOL}
-
-echo -e "${ROOTPSWD}\n${ROOTPSWD}" | passwd root
+dm_set_rootpassword
 
 apt -y install ssh
 
+dm_set_docker
 if test "${NEEDDOCKER}" "=" "y"
 then
-    apt -y install apt-transport-https ca-certificates curl gnupg2 software-properties-common
-    curl -fsSL https://download.docker.com/linux/debian/gpg | sudo apt-key add -
-    add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/debian ${RELEASE} stable"
-    apt update
-    apt-cache policy docker-ce
-    apt -y install docker-ce
+    dm_set_docker
 fi
 
 
