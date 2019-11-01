@@ -3,7 +3,7 @@
 function dm_ask_servername {
     local SERVERNAME_R
     read -p "Hostname of the computer [${SERVERNAME}]:" SERVERNAME_R
-    if test -n ${SERVERNAME_R}
+    if test -n "${SERVERNAME_R}"
     then
         SERVERNAME=${SERVERNAME_R}
     fi
