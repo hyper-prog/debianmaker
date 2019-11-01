@@ -47,8 +47,9 @@ mount --rbind /dev /target/dev
 mount --rbind /proc /target/proc
 mount --rbind /sys /target/sys
 cp ./inchroot /target/
-cp ./lib_inchroot
+cp ./lib_inchroot /target/
 chmod +x /target/inchroot
+chmod +x /target/lib_inchroot
 
 chroot /target /inchroot
 rm /target/inchroot
