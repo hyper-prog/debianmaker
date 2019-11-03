@@ -11,6 +11,7 @@ export LANG=C
 export LC_CTYPE=C
 export SERVERNAME="busterz"
 export DOMAIN="local"         # domain without hostname
+export FSTYPE="zfs"           # zfs or ext4
 export MAC=""                 # 00:12:23:ab:cd:ef
 export IFACE="ether0"         # lan0 ether0 wan1
 export IPSRC="dhcp"           # "dhcp" or "static"

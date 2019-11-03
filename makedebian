@@ -59,7 +59,7 @@ umount -Rfl /target/dev
 umount -Rfl /target/sys
 umount -Rfl /target/proc
 
-zpool export ${POOL}
+dm_zfs_detachfilesystem
 sync
 
 echo " ============================================================= "

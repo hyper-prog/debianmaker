@@ -18,6 +18,15 @@ function dm_ask_domain {
     fi
 }
 
+function dm_ask_fstype {
+    local FSTYPE_R
+    read -p "Filesystem on the disks <zfs|ext4> [${FSTYPE}]:" FSTYPE_R
+    if test -n "${FSTYPE_R}"
+    then
+        FSTYPE="${FSTYPE_R}"
+    fi
+}
+
 function dm_ask_macaddress {
     local MAC_R
     if test -z "${MAC}"
@@ -227,6 +236,7 @@ function dm_ask_password {
 function dm_ask_settings {
     dm_ask_servername
     dm_ask_domain
+    dm_ask_fstype
     dm_ask_macaddress
     dm_ask_ifacename
     dm_ask_ipsettings
@@ -252,7 +262,7 @@ function dm_zfs_zfsforlive {
 }
 
 function dm_zfs_makefilesystem {
-    PARTS=$(for disk in ${DISKS} ; do echo -n "/dev/disk/by-partlabel/${disk}2-zfs "; done)
+    PARTS=$(for disk in ${DISKS} ; do echo -n "/dev/disk/by-partlabel/${disk}-data "; done)
 
     zpool create -f \
         -o ashift=12 \
@@ -291,12 +301,86 @@ function dm_zfs_makefilesystem {
     zfs create -o mountpoint=/srv ${POOL}/srv
 }
 
+function dm_zfs_detachfilesystem {
+    zpool export ${POOL}
+}
+
+function dm_ext4_makefilesystem {
+    PARTS=$(for disk in ${DISKS} ; do echo -n "/dev/disk/by-partlabel/${disk}-data "; done)
+
+    local DISKNUM
+    export ONEDATAPART=""
+    DISKNUM=$(echo "${DISKS}"|wc -w)
+    if test "${DISKNUM}" "-eq" "1"
+    then
+        echo ">>> Using single disk without raid..."
+        ONEDATAPART=${DISKS}
+    fi
+    if test "${DISKNUM}" "-ge" "2"
+    then
+        echo ">>> Create a soft raid array..."
+        ONEDATAPART="/dev/md0"
+        mdadm --create ${ONEDATAPART} \
+              --level=${RAIDSPEC} \
+              --raid-devices=${DISKNUM} \
+              --force --metadata=0.90 ${PARTS}
+    fi
+
+    sleep 2
+    
+    echo ">>> Create LVM on disk(s)..."
+    pvcreate -f ${ONEDATAPART}
+    sleep 2
+    vgcreate ${POOL} ${ONEDATAPART}
+    sleep 2
+    echo ">>> Create volumes on LVM ..."
+    lvcreate -n ${POOL}_vol_varlog -L 2G ${POOL}
+    lvcreate -n ${POOL}_vol_var -L 5G ${POOL}
+    lvcreate -n ${POOL}_vol_root -l 80%FREE ${POOL}
+
+    sleep 2
+    echo ">>> Formatting ext4 filesystems..."
+    mkfs.ext4 -F /dev/${POOL}/${POOL}_vol_root
+    mkfs.ext4 -F -T news /dev/${POOL}/${POOL}_vol_var
+    mkfs.ext4 -T news /dev/${POOL}/${POOL}_vol_varlog
+
+    FSUUIDOF_ROOT=$(blkid -s UUID -o value /dev/${POOL}/${POOL}_vol_root)
+    FSUUIDOF_VAR=$(blkid -s UUID -o value /dev/${POOL}/${POOL}_vol_var)
+    FSUUIDOF_VARLOG=$(blkid -s UUID -o value /dev/${POOL}/${POOL}_vol_varlog)
+
+    mount /dev/${POOL}/${POOL}_vol_root /target
+    mkdir -p /target/var
+    mount /dev/${POOL}/${POOL}_vol_var /target/var
+    mkdir -p /target/var/log
+    mount /dev/${POOL}/${POOL}_vol_varlog /target/var/log
+}
+
+function dm_ext4_filesystemsettings {
+    local DISKNUM
+    DISKNUM=$(echo "${DISKS}"|wc -w)
+
+    if test "${DISKNUM}" "-ge" "2"
+    then
+        mdadm --detail --scan > /target/etc/mdadm.conf
+    fi
+
+    echo -e "/dev/${POOL}/${POOL}_vol_root /\text4\terrors=remount-ro 0       1" >> /target/fstab
+    echo -e "/dev/${POOL}/${POOL}_vol_var /var\text4\tdefaults        0       2" >> /target/fstab
+    echo -e "/dev/${POOL}/${POOL}_vol_varlog /var/log\text4\tdefaults        0       3" >> /target/fstab
+}
+
+function dm_ext4_detachfilesystem {
+    umount /target/var/log
+    umount /target/var
+    umount /target
+}
+
 function dm_disk_partitioning {
     for disk in ${DISKS}; do
     sgdisk -Z \
         -n9:-10M:0 -t9:bf07 -c9:${disk}9-Reserverd \
         -n1:1M:+512M -t1:${PARTTYPE} -c1:${disk}1-${BOOT} \
-        -n2:0:0 -t2:bf01 -c2:${disk}2-zfs /dev/${disk}
+        -n2:0:0 -t2:bf01 -c2:${disk}-data /dev/${disk}
     done
 
     sleep 10
