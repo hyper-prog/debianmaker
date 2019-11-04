@@ -329,7 +329,7 @@ function dm_ext4_makefilesystem {
     sleep 2
     
     echo ">>> Create LVM on disk(s)..."
-    pvcreate -f ${ONEDATAPART}
+    pvcreate -ff --yes ${ONEDATAPART}
     sleep 2
     vgcreate ${POOL} ${ONEDATAPART}
     sleep 2
