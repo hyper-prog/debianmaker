@@ -323,7 +323,7 @@ function dm_ext4_makefilesystem {
         mdadm --create ${ONEDATAPART} \
               --level=${RAIDSPEC} \
               --raid-devices=${DISKNUM} \
-              --force --metadata=0.90 ${PARTS}
+              --force --run --metadata=0.90 ${PARTS}
     fi
 
     sleep 2
