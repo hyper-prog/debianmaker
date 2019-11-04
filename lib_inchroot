@@ -14,6 +14,11 @@ function dm_swap_swaponzfs {
     echo "/dev/zvol/${POOL}/swap none swap defaults 0 0" >> /etc/fstab
 }
 
+function dm_swap_swaponlvm {
+    mkswap /dev/${POOL}/${POOL}_swap
+    echo "/dev/${POOL}/${POOL}_swap none swap defaults 0 0" >> /etc/fstab
+}
+
 function dm_zfs_setzfsparameters {
     zfs set quota=1G ${POOL}/tmp
     zfs set quota=11G ${POOL}/var

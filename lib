@@ -336,6 +336,7 @@ function dm_ext4_makefilesystem {
     echo ">>> Create volumes on LVM ..."
     lvcreate -n ${POOL}_vol_varlog -L 2G ${POOL}
     lvcreate -n ${POOL}_vol_var -L 5G ${POOL}
+    lvcreate -n ${POOL}_swap -L 1G ${POOL}
     lvcreate -n ${POOL}_vol_root -l 80%FREE ${POOL}
 
     sleep 2
@@ -364,9 +365,9 @@ function dm_ext4_filesystemsettings {
         mdadm --detail --scan > /target/etc/mdadm.conf
     fi
 
-    echo -e "/dev/${POOL}/${POOL}_vol_root /\text4\terrors=remount-ro 0       1" >> /target/fstab
-    echo -e "/dev/${POOL}/${POOL}_vol_var /var\text4\tdefaults        0       2" >> /target/fstab
-    echo -e "/dev/${POOL}/${POOL}_vol_varlog /var/log\text4\tdefaults        0       3" >> /target/fstab
+    echo -e "/dev/${POOL}/${POOL}_vol_root /\text4\terrors=remount-ro 0       1" >> /target/etc/fstab
+    echo -e "/dev/${POOL}/${POOL}_vol_var /var\text4\tdefaults        0       2" >> /target/etc/fstab
+    echo -e "/dev/${POOL}/${POOL}_vol_varlog /var/log\text4\tdefaults        0       3" >> /target/etc/fstab
 }
 
 function dm_ext4_detachfilesystem {

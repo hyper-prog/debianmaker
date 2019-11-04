@@ -26,12 +26,25 @@ fi
 apt update
 apt -y full-upgrade
 
-dm_zfs_zfsforlive
+if test "${FSTYPE}" = "zfs"
+then
+    dm_zfs_zfsforlive
+fi
+
 dm_disk_partitioning
 
 mkdir -p /target
 
-dm_zfs_makefilesystem
+if test "${FSTYPE}" = "zfs"
+then
+    dm_zfs_makefilesystem
+fi
+
+if test "${FSTYPE}" = "ext4"
+then
+    dm_ext4_makefilesystem
+fi
+
 
 chmod 1777 /target/tmp
 chmod 1777 /target/var/tmp
@@ -42,6 +55,11 @@ dm_set_hostname
 dm_net_networksettings
 dm_set_sourceslist
 dm_console_settings
+
+if test "${FSTYPE}" = "ext4"
+then
+    dm_ext4_filesystemsettings
+fi
 
 mount --rbind /dev /target/dev
 mount --rbind /proc /target/proc
@@ -59,7 +77,15 @@ umount -Rfl /target/dev
 umount -Rfl /target/sys
 umount -Rfl /target/proc
 
-dm_zfs_detachfilesystem
+if test "${FSTYPE}" = "zfs"
+then
+    dm_zfs_detachfilesystem
+fi
+if test "${FSTYPE}" = "ext4"
+then
+    dm_ext4_detachfilesystem
+fi
+
 sync
 
 echo " ============================================================= "

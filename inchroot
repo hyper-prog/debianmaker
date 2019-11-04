@@ -29,15 +29,25 @@ locale-gen
 update-locale LANG=C.UTF-8
 apt -y install --no-install-recommends linux-image-amd64 linux-headers-amd64 linux-libc-dev:amd64 ${PACKAGES}
 
-apt -y install zfsutils-linux zfs-zed dkms zfs-dkms zfs-initramfs spl-dkms spl
+if test "${FSTYPE}" = "zfs"
+then
+    apt -y install zfsutils-linux zfs-zed dkms zfs-dkms zfs-initramfs spl-dkms spl
+fi
 
 apt -y install gdisk dosfstools git rsync keyboard-configuration kbd man
 
 dm_grub_setbiosboot
 
-dm_swap_swaponzfs
+if test "${FSTYPE}" = "zfs"
+then
+    dm_swap_swaponzfs
+    dm_zfs_setzfsparameters
+fi    
 
-dm_zfs_setzfsparameters
+if test "${FSTYPE}" = "ext4"
+then
+    dm_swap_swaponlvm
+fi
 
 dm_set_rootpassword
 
