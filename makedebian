@@ -45,12 +45,11 @@ then
     dm_ext4_makefilesystem
 fi
 
-
-chmod 1777 /target/tmp
-chmod 1777 /target/var/tmp
+dm_fs_ensuretmprights
 
 debootstrap ${RELEASE} /target
 
+dm_fs_ensuretmprights
 dm_set_hostname
 dm_net_networksettings
 dm_set_sourceslist

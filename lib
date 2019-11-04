@@ -334,10 +334,10 @@ function dm_ext4_makefilesystem {
     vgcreate ${POOL} ${ONEDATAPART}
     sleep 2
     echo ">>> Create volumes on LVM ..."
-    lvcreate -n ${POOL}_vol_varlog -L 2G ${POOL}
-    lvcreate -n ${POOL}_vol_var -L 5G ${POOL}
-    lvcreate -n ${POOL}_swap -L 1G ${POOL}
-    lvcreate -n ${POOL}_vol_root -l 80%FREE ${POOL}
+    lvcreate --yes -n ${POOL}_vol_varlog -L 2G ${POOL}
+    lvcreate --yes -n ${POOL}_vol_var -L 5G ${POOL}
+    lvcreate --yes -n ${POOL}_swap -L 1G ${POOL}
+    lvcreate --yes -n ${POOL}_vol_root -l 80%FREE ${POOL}
 
     sleep 2
     echo ">>> Formatting ext4 filesystems..."
@@ -374,6 +374,17 @@ function dm_ext4_detachfilesystem {
     umount /target/var/log
     umount /target/var
     umount /target
+}
+
+function dm_fs_ensuretmprights {
+    if test -d "/target/tmp"
+    then
+        chmod 1777 /target/tmp
+    fi
+    if test -d "/target/var/tmp"
+    then
+        chmod 1777 /target/var/tmp
+    fi
 }
 
 function dm_disk_partitioning {

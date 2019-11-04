@@ -54,7 +54,7 @@ dm_set_rootpassword
 apt -y install ssh
 
 dm_set_docker
-if test "${NEEDDOCKER}" "=" "y"
+if test "${NEEDDOCKER}" = "y"
 then
     dm_set_docker
 fi
