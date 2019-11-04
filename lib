@@ -2,7 +2,7 @@
 
 function dm_ask_servername {
     local SERVERNAME_R
-    read -p "Hostname of the computer [${SERVERNAME}]:" SERVERNAME_R
+    read -e -p "Hostname of the computer [${SERVERNAME}]:" SERVERNAME_R
     if test -n "${SERVERNAME_R}"
     then
         SERVERNAME=${SERVERNAME_R}
@@ -11,7 +11,7 @@ function dm_ask_servername {
 
 function dm_ask_domain {
     local DOMAIN_R
-    read -p "Network domain name [${DOMAIN}]:" DOMAIN_R
+    read -e -p "Network domain name [${DOMAIN}]:" DOMAIN_R
     if test -n "${DOMAIN_R}"
     then
         DOMAIN="${DOMAIN_R}"
@@ -20,7 +20,7 @@ function dm_ask_domain {
 
 function dm_ask_fstype {
     local FSTYPE_R
-    read -p "Filesystem on the disks <zfs|ext4> [${FSTYPE}]:" FSTYPE_R
+    read -e -p "Filesystem on the disks <zfs|ext4> [${FSTYPE}]:" FSTYPE_R
     if test -n "${FSTYPE_R}"
     then
         FSTYPE="${FSTYPE_R}"
@@ -33,7 +33,7 @@ function dm_ask_macaddress {
     then
         MAC=$(ip addr | grep link/ether | awk '{print $2}')
     fi
-    read -p "MAC address of the configurable network interface [${MAC}]:" MAC_R
+    read -e -p "MAC address of the configurable network interface [${MAC}]:" MAC_R
     if test -n "${MAC_R}"
     then
         MAC="${MAC_R}"
@@ -42,7 +42,7 @@ function dm_ask_macaddress {
 
 function dm_ask_ifacename {
     local IFACE_R
-    read -p "Name of the configurable network interface [${IFACE}]:" IFACE_R
+    read -e -p "Name of the configurable network interface [${IFACE}]:" IFACE_R
     if test -n "${IFACE_R}"
     then
         IFACE="${IFACE_R}"
@@ -54,7 +54,7 @@ function dm_ask_ipsettings {
     local IPADDRESS_R
     local GWADDRESS_R
     local DNSADDRESS_R
-    read -p "The configurable network interface obtain ip <dhcp | static > [${IPSRC}]:" IPSRC_R
+    read -e -p "The configurable network interface obtain ip <dhcp | static > [${IPSRC}]:" IPSRC_R
     if test -n "${IPSRC_R}"
     then
         if test "${IPSRC_R}" = "static"
@@ -69,19 +69,19 @@ function dm_ask_ipsettings {
 
     if test "${IPSRC_R}" = "static"
     then
-        read -p "IP address and mask of the network interface [${IPADDRESS}]:" IPADDRESS_R
+        read -e -p "IP address and mask of the network interface [${IPADDRESS}]:" IPADDRESS_R
         if test -n "${IPADDRESS_R}"
         then
             IPADDRESS="${IPADDRESS_R}"
         fi
 
-        read -p "Gateway address [${GWADDRESS}]:" GWADDRESS_R
+        read -e -p "Gateway address [${GWADDRESS}]:" GWADDRESS_R
         if test -n "${GWADDRESS_R}"
         then
             GWADDRESS="${GWADDRESS_R}"
         fi
 
-        read -p "DNS server address [${DNSADDRESS}]:" DNSADDRESS_R
+        read -e -p "DNS server address [${DNSADDRESS}]:" DNSADDRESS_R
         if test -n "${DNSADDRESS_R}"
         then
             DNSADDRESS="${DNSADDRESS_R}"
@@ -107,7 +107,7 @@ function dm_ask_disks {
         done
         DISKS="${DISKLINELIST}"
     fi
-    read -p "List of the disks under /dev to use [${DISKS}]:" DISKS_R
+    read -e -p "List of the disks under /dev to use [${DISKS}]:" DISKS_R
     if test -n "${DISKS_R}"
     then
         DISKS="${DISKS_R}"
@@ -131,7 +131,7 @@ function dm_ask_raidspec {
     then
         RAIDSPEC="raidz"
     fi
-    read -p "Raid type of the disk array <empty|mirror|raidz> [${RAIDSPEC}]:" RAIDSPEC_R
+    read -e -p "Raid type of the disk array <empty|mirror|raidz> [${RAIDSPEC}]:" RAIDSPEC_R
     if test -n "${RAIDSPEC_R}"
     then
         RAIDSPEC="${RAIDSPEC_R}"
@@ -144,7 +144,7 @@ function dm_ask_poolname {
     then
         POOL="${SERVERNAME}_pool"
     fi
-    read -p "The zfs pool name [${POOL}]:" POOL_R
+    read -e -p "The zfs pool name [${POOL}]:" POOL_R
     if test -n "${POOL_R}"
     then
         POOL="${POOL_R}"
@@ -153,7 +153,7 @@ function dm_ask_poolname {
 
 function dm_ask_fscompression {
     local ZFSCOMP_R
-    read -p "The zfs compression <off|lz4> [${ZFSCOMP}]:" ZFSCOMP_R
+    read -e -p "The zfs compression <off|lz4> [${ZFSCOMP}]:" ZFSCOMP_R
     if test -n "${ZFSCOMP_R}"
     then
         ZFSCOMP="${ZFSCOMP_R}"
@@ -162,7 +162,7 @@ function dm_ask_fscompression {
 
 function dm_ask_extrapackages {
     local PACKAGES_R
-    read -p "Extra packages to install [${PACKAGES}]:" PACKAGES_R
+    read -e -p "Extra packages to install [${PACKAGES}]:" PACKAGES_R
     if test -n "${PACKAGES_R}"
     then
         PACKAGES="${PACKAGES_R}"
@@ -172,13 +172,13 @@ function dm_ask_extrapackages {
 function dm_ask_timezones {
     local TZAREA_R
     local TZNAME_R
-    read -p "Timezone area [${TZAREA}]:" TZAREA_R
+    read -e -p "Timezone area [${TZAREA}]:" TZAREA_R
     if test -n "${TZAREA_R}"
     then
         TZAREA="${TZAREA_R}"
     fi
 
-    read -p "Timezone name [${TZNAME}]:" TZNAME_R
+    read -e -p "Timezone name [${TZNAME}]:" TZNAME_R
     if test -n "${TZNAME_R}"
     then
         TZNAME="${TZNAME_R}"
@@ -189,19 +189,19 @@ function dm_ask_keyboard {
     local KEYMODEL_R
     local KEYLAYOUT_R
     local KEYVARIANT_R
-    read -p "Keyboard model [${KEYMODEL}]:" KEYMODEL_R
+    read -e -p "Keyboard model [${KEYMODEL}]:" KEYMODEL_R
     if test -n "${KEYMODEL_R}"
     then
         KEYMODEL="${KEYMODEL_R}"
     fi
 
-    read -p "Keyboard layout [${KEYLAYOUT}]:" KEYLAYOUT_R
+    read -e -p "Keyboard layout [${KEYLAYOUT}]:" KEYLAYOUT_R
     if test -n "${KEYLAYOUT_R}"
     then
         KEYLAYOUT="${KEYLAYOUT_R}"
     fi
 
-    read -p "Keyboard variant [${KEYVARIANT}]:" KEYVARIANT_R
+    read -e -p "Keyboard variant [${KEYVARIANT}]:" KEYVARIANT_R
     if test -n "${KEYVARIANT_R}"
     then
         KEYVARIANT="${KEYVARIANT_R}"
@@ -210,7 +210,7 @@ function dm_ask_keyboard {
 
 function dm_ask_docker {
     local NEEDDOCKER_R
-    read -p "Do you need docker to be installed? <y|n> [${NEEDDOCKER}]:" NEEDDOCKER_R
+    read -e -p "Do you need docker to be installed? <y|n> [${NEEDDOCKER}]:" NEEDDOCKER_R
     if test -n "${NEEDDOCKER_R}"
     then
         NEEDDOCKER="${NEEDDOCKER_R}"
@@ -220,9 +220,9 @@ function dm_ask_docker {
 function dm_ask_password {
     local r1pwd
     local r2pwd
-    read -s -p "Password for root:" r1pwd
+    read -e -s -p "Password for root:" r1pwd
     echo -e "\n"
-    read -s -p "Password for root again:" r2pwd
+    read -e -s -p "Password for root again:" r2pwd
 
     if test "${r1pwd}" = "${r2pwd}"
     then
