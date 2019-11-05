@@ -33,6 +33,10 @@ if test "${FSTYPE}" = "zfs"
 then
     apt -y install zfsutils-linux zfs-zed dkms zfs-dkms zfs-initramfs spl-dkms spl
 fi
+if test "${FSTYPE}" = "ext4"
+then
+    apt -y install lvm2 mdadm
+fi
 
 apt -y install gdisk dosfstools git rsync keyboard-configuration kbd man
 

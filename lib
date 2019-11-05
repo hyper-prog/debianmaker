@@ -317,7 +317,7 @@ function dm_ext4_makefilesystem {
     if test "${DISKNUM}" "-eq" "1"
     then
         echo ">>> Using single disk without raid..."
-        ONEDATAPART=${DISKS}
+        ONEDATAPART="/dev/${DISKS}"
     fi
     if test "${DISKNUM}" "-ge" "2"
     then
