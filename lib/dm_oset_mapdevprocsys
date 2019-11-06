@@ -1,0 +1,14 @@
+#!/bin/bash
+
+function dmf_oset_mapdevprocsys {
+    mount --rbind /dev /target/dev
+    mount --rbind /proc /target/proc
+    mount --rbind /sys /target/sys
+    if test ! -d "/target/run/udev"
+    then
+        mkdir -p /target/run/udev
+    fi
+    mount --rbind /run/udev /target/run/udev
+}
+
+dmf_oset_mapdevprocsys

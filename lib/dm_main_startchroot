@@ -1,0 +1,13 @@
+#!/bin/bash
+
+cp ./lib/dm_main_inchroot /target/
+mkdir -p /target/dm_inchroot_lib
+cp  ./lib/* /target/dm_inchroot_lib/
+
+chmod +x /target/dm_main_inchroot
+chmod +x /target/dm_inchroot_lib/*
+
+chroot /target /dm_main_inchroot
+
+rm /target/dm_main_inchroot
+rm -rf /target/dm_inchroot_lib

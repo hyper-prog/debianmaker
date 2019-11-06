@@ -1,0 +1,55 @@
+#!/bin/bash
+
+function dmf_ext4_makefilesystem {
+    PARTS=$(for disk in ${DISKS} ; do echo -n "/dev/disk/by-partlabel/${disk}-data "; done)
+
+    local DISKNUM
+    export ONEDATAPART=""
+    DISKNUM=$(echo "${DISKS}"|wc -w)
+    if test "${DISKNUM}" "-eq" "1"
+    then
+        echo ">>> Using single disk without raid..."
+        ONEDATAPART="/dev/${DISKS}"
+    fi
+    if test "${DISKNUM}" "-ge" "2"
+    then
+        echo ">>> Create a soft raid array..."
+        ONEDATAPART="/dev/md0"
+        mdadm --create ${ONEDATAPART} \
+              --level=${RAIDSPEC} \
+              --raid-devices=${DISKNUM} \
+              --force --run --metadata=0.90 ${PARTS}
+    fi
+
+    sleep 2
+
+    echo ">>> Create LVM on disk(s)..."
+    pvcreate -ff --yes ${ONEDATAPART}
+    sleep 2
+    vgcreate ${POOL} ${ONEDATAPART}
+    sleep 2
+    echo ">>> Create volumes on LVM ..."
+    lvcreate --yes -n ${POOL}_vol_varlog -L 2G ${POOL}
+    lvcreate --yes -n ${POOL}_vol_var -L 5G ${POOL}
+    lvcreate --yes -n ${POOL}_swap -L 1G ${POOL}
+    lvcreate --yes -n ${POOL}_vol_root -l 80%FREE ${POOL}
+
+    sleep 2
+    echo ">>> Formatting ext4 filesystems..."
+    mkfs.ext4 -F /dev/mapper/${POOL}-${POOL}_vol_root
+    mkfs.ext4 -F -T news /dev/mapper/${POOL}-${POOL}_vol_var
+    mkfs.ext4 -T news /dev/mapper/${POOL}-${POOL}_vol_varlog
+
+    FSUUIDOF_ROOT=$(blkid -s UUID -o value /dev/mapper/${POOL}-${POOL}_vol_root)
+    FSUUIDOF_VAR=$(blkid -s UUID -o value /dev/mapper/${POOL}-${POOL}_vol_var)
+    FSUUIDOF_VARLOG=$(blkid -s UUID -o value /dev/mapper/${POOL}-${POOL}_vol_varlog)
+
+    mkdir -p /target
+    mount /dev/mapper/${POOL}-${POOL}_vol_root /target
+    mkdir -p /target/var
+    mount /dev/mapper/${POOL}-${POOL}_vol_var /target/var
+    mkdir -p /target/var/log
+    mount /dev/mapper/${POOL}-${POOL}_vol_varlog /target/var/log
+}
+
+dmf_ext4_makefilesystem

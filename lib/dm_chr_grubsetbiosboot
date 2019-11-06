@@ -1,0 +1,12 @@
+#!/bin/bash
+
+function dmf_chr_grubsetbiosboot {
+    DISKDEVS=$(for disk in ${DISKS} ; do echo -n "/dev/${disk} " ; done | sed -e 's@ /@, /@g')
+    echo "grub-pc grub-pc/install_devices multiselect ${DISKDEVS}" | debconf-set-selections
+    apt -y install grub-pc
+    update-initramfs -u -k all
+    update-grub
+}
+
+dmf_chr_grubsetbiosboot
+

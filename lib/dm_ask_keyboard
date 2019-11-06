@@ -1,0 +1,26 @@
+#!/bin/bash
+
+function dmf_ask_keyboard {
+    local KEYMODEL_R
+    local KEYLAYOUT_R
+    local KEYVARIANT_R
+    read -e -p "Keyboard model [${KEYMODEL}]:" KEYMODEL_R
+    if test -n "${KEYMODEL_R}"
+    then
+        KEYMODEL="${KEYMODEL_R}"
+    fi
+
+    read -e -p "Keyboard layout [${KEYLAYOUT}]:" KEYLAYOUT_R
+    if test -n "${KEYLAYOUT_R}"
+    then
+        KEYLAYOUT="${KEYLAYOUT_R}"
+    fi
+
+    read -e -p "Keyboard variant [${KEYVARIANT}]:" KEYVARIANT_R
+    if test -n "${KEYVARIANT_R}"
+    then
+        KEYVARIANT="${KEYVARIANT_R}"
+    fi
+}
+
+dmf_ask_keyboard

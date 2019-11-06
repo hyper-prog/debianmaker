@@ -1,0 +1,8 @@
+#!/bin/bash
+
+function dmf_uni_fullupgrade {
+    apt update
+    apt -y full-upgrade
+}
+
+dmf_uni_fullupgrade

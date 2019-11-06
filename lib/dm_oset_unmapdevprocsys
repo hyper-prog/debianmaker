@@ -1,0 +1,10 @@
+#!/bin/bash
+
+function dmf_oset_unmapdevprocsys {
+    umount -Rfl /target/dev
+    umount -Rfl /target/sys
+    umount -Rfl /target/proc
+    umount -Rfl /target/run/udev
+}
+
+dmf_oset_unmapdevprocsys

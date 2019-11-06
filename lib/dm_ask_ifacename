@@ -1,0 +1,12 @@
+#!/bin/bash
+
+function dmf_ask_ifacename {
+    local IFACE_R
+    read -e -p "Name of the configurable network interface [${IFACE}]:" IFACE_R
+    if test -n "${IFACE_R}"
+    then
+        IFACE="${IFACE_R}"
+    fi
+}
+
+dmf_ask_ifacename

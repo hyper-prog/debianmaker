@@ -1,0 +1,7 @@
+#!/bin/bash
+
+function dmf_chr_installssh {
+    apt -y install ssh
+}
+
+dmf_chr_installssh

@@ -1,0 +1,9 @@
+#!/bin/bash
+
+function dmf_ext4_detachfilesystem {
+    umount /target/var/log
+    umount /target/var
+    umount /target
+}
+
+dmf_ext4_detachfilesystem

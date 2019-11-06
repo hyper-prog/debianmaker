@@ -1,0 +1,16 @@
+#!/bin/bash
+
+function dmf_ask_poolname {
+    local POOL_R
+    if test "${POOL}" "=" "zfs_pool"
+    then
+        POOL="${SERVERNAME}_pool"
+    fi
+    read -e -p "The zfs pool name [${POOL}]:" POOL_R
+    if test -n "${POOL_R}"
+    then
+        POOL="${POOL_R}"
+    fi
+}
+
+dmf_ask_poolname

@@ -1,0 +1,12 @@
+#!/bin/bash
+
+function dmf_ask_extrapackages {
+    local PACKAGES_R
+    read -e -p "Extra packages to install [${PACKAGES}]:" PACKAGES_R
+    if test -n "${PACKAGES_R}"
+    then
+        PACKAGES="${PACKAGES_R}"
+    fi
+}
+
+dmf_ask_extrapackages

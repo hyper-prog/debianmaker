@@ -1,0 +1,12 @@
+#!/bin/bash
+
+function dmf_ask_domain {
+    local DOMAIN_R
+    read -e -p "Network domain name [${DOMAIN}]:" DOMAIN_R
+    if test -n "${DOMAIN_R}"
+    then
+        DOMAIN="${DOMAIN_R}"
+    fi
+}
+
+dmf_ask_domain

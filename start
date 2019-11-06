@@ -1,0 +1,4 @@
+#!/bin/bash
+
+echo "Let's rock!"
+. ./lib/dm_main_makedebian

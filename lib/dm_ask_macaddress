@@ -1,0 +1,16 @@
+#!/bin/bash
+
+function dmf_ask_macaddress {
+    local MAC_R
+    if test -z "${MAC}"
+    then
+        MAC=$(ip addr | grep link/ether | awk '{print $2}')
+    fi
+    read -e -p "MAC address of the configurable network interface [${MAC}]:" MAC_R
+    if test -n "${MAC_R}"
+    then
+        MAC="${MAC_R}"
+    fi
+}
+
+dmf_ask_macaddress

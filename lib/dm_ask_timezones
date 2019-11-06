@@ -1,0 +1,19 @@
+#!/bin/bash
+
+function dmf_ask_timezones {
+    local TZAREA_R
+    local TZNAME_R
+    read -e -p "Timezone area [${TZAREA}]:" TZAREA_R
+    if test -n "${TZAREA_R}"
+    then
+        TZAREA="${TZAREA_R}"
+    fi
+
+    read -e -p "Timezone name [${TZNAME}]:" TZNAME_R
+    if test -n "${TZNAME_R}"
+    then
+        TZNAME="${TZNAME_R}"
+    fi
+}
+
+dmf_ask_timezones

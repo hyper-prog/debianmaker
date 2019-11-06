@@ -1,0 +1,17 @@
+#!/bin/bash
+
+function dmf_ext4_filesystemsettings {
+    local DISKNUM
+    DISKNUM=$(echo "${DISKS}"|wc -w)
+
+    if test "${DISKNUM}" "-ge" "2"
+    then
+        mdadm --detail --scan > /target/etc/mdadm.conf
+    fi
+
+    echo -e "/dev/mapper/${POOL}-${POOL}_vol_root /\text4\terrors=remount-ro 0       1" >> /target/etc/fstab
+    echo -e "/dev/mapper/${POOL}-${POOL}_vol_var /var\text4\tdefaults        0       2" >> /target/etc/fstab
+    echo -e "/dev/mapper/${POOL}-${POOL}_vol_varlog /var/log\text4\tdefaults        0       3" >> /target/etc/fstab
+}
+
+dmf_ext4_filesystemsettings

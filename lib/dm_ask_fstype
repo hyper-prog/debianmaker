@@ -1,0 +1,12 @@
+#!/bin/bash
+
+function dmf_ask_fstype {
+    local FSTYPE_R
+    read -e -p "Filesystem on the disks <zfs|ext4> [${FSTYPE}]:" FSTYPE_R
+    if test -n "${FSTYPE_R}"
+    then
+        FSTYPE="${FSTYPE_R}"
+    fi
+}
+
+dmf_ask_fstype

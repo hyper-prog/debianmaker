@@ -1,0 +1,27 @@
+#!/bin/bash
+
+function dmf_oset_consolesettings {
+    local FTOW
+    FTOW="/target/etc/default/keyboard"
+    echo -e "XKBMODEL=\"${KEYMODEL}\""      > ${FTOW}
+    echo -e "XKBLAYOUT=\"${KEYLAYOUT}\""    >> ${FTOW}
+    echo -e "XKBVARIANT=\"${KEYVARIANT}\""  >> ${FTOW}
+    echo -e "XKBOPTIONS=\"\""               >> ${FTOW}
+    echo -e ""                              >> ${FTOW}
+    echo -e "BACKSPACE=\"guess\""           >> ${FTOW}
+
+    FTOW="/target/etc/default/console-setup"
+    echo -e "# CONFIGURATION FILE FOR SETUPCON" > ${FTOW}
+    echo -e ""                                  >> ${FTOW}
+    echo -e "ACTIVE_CONSOLES=\"/dev/tty[1-6]\"" >> ${FTOW}
+    echo -e ""                                  >> ${FTOW}
+    echo -e "CHARMAP=\"UTF-8\""                 >> ${FTOW}
+    echo -e ""                                  >> ${FTOW} 
+    echo -e "CODESET=\"Lat15\""                 >> ${FTOW}
+    echo -e "FONTFACE=\"Fixed\""                >> ${FTOW}
+    echo -e "FONTSIZE=\"8x16\""                 >> ${FTOW}
+    echo -e ""                                  >> ${FTOW}
+    echo -e "VIDEOMODE=\"\""                    >> ${FTOW}
+}
+
+dmf_oset_consolesettings

@@ -1,0 +1,11 @@
+#!/bin/bash
+
+function dmf_oset_sourceslist {
+    local FTOW
+    FTOW="/target/etc/apt/sources.list"
+    echo -e "deb http://deb.debian.org/debian/ ${RELEASE} main non-free contrib" > ${FTOW}
+    echo -e "deb http://security.debian.org/ ${RELEASE}/updates main contrib non-free" >> ${FTOW}
+    echo -e "deb http://deb.debian.org/debian/ ${RELEASE}-updates main contrib non-free" >> ${FTOW}
+}
+
+dmf_oset_sourceslist

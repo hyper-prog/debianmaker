@@ -1,0 +1,72 @@
+#!/bin/bash
+
+# Debian bootstrapper
+# Author: Peter Deak (hyper80@gmail.com)
+# License: GPL,  No warrantly, use at you own risk!
+
+if test "${DONTRUNCONF}" "!=" "dontrunconf"
+then
+    . ./conf
+fi
+
+# #########################################################################
+if test "${DONTASK}" "!=" "dontask"
+then
+    . ./lib/dm_ask_settings
+fi
+
+export PARTTYPE="EF02" # bios
+if test "${BOOT}" = "EFI"
+then
+    PARTTYPE="EF00" # efi
+fi
+
+. ./lib/dm_uni_fullupgrade
+
+if test "${FSTYPE}" = "zfs"
+then
+    . ./lib/dm_zfs_zfsforlive
+fi
+
+. ./lib/dm_disk_partitioning
+
+if test "${FSTYPE}" = "zfs"
+then
+    . ./lib/dm_zfs_makefilesystem
+fi
+
+if test "${FSTYPE}" = "ext4"
+then
+    . ./lib/dm_ext4_makefilesystem
+fi
+
+. ./lib/dm_oset_ensuretmprights
+. ./lib/dm_oset_debootstrap
+. ./lib/dm_oset_ensuretmprights
+. ./lib/dm_oset_hostname
+. ./lib/dm_oset_networksettings
+. ./lib/dm_oset_sourceslist
+. ./lib/dm_oset_consolesettings
+
+if test "${FSTYPE}" = "ext4"
+then
+    . ./lib/dm_ext4_filesystemsettings
+fi
+
+. ./lib/dm_oset_mapdevprocsys
+. ./lib/dm_main_startchroot
+. ./lib/dm_oset_unmapdevprocsys
+
+if test "${FSTYPE}" = "zfs"
+then
+    . ./lib/dm_zfs_detachfilesystem
+fi
+if test "${FSTYPE}" = "ext4"
+then
+    . ./lib/dm_ext4_detachfilesystem
+fi
+
+sync
+echo " ============================================================= "
+echo " = It seems my work is over, Your system is ready to boot    = "
+echo " ============================================================= "

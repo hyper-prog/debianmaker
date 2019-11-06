@@ -1,0 +1,28 @@
+#!/bin/bash
+
+function dmf_ask_disks {
+    local DISKS_R
+    local DISKRAWLIST
+    local DISKLINELIST
+    if test -z "${DISKS}"
+    then
+        DISKRAWLIST=$(cat /proc/partitions | grep -v "major" | grep -v "^\s*$" | awk '{print $4}' | grep '^sd[a-z]$')
+        DISKLINELIST=""
+        for disk in ${DISKRAWLIST}
+        do
+            if test "${DISKLINELIST}" "!=" ""
+            then
+               DISKLINELIST="${DISKLINELIST} "
+            fi
+            DISKLINELIST="${DISKLINELIST}${disk}"
+        done
+        DISKS="${DISKLINELIST}"
+    fi
+    read -e -p "List of the disks under /dev to use [${DISKS}]:" DISKS_R
+    if test -n "${DISKS_R}"
+    then
+        DISKS="${DISKS_R}"
+    fi
+}
+
+dmf_ask_disks

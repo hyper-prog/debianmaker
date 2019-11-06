@@ -1,0 +1,14 @@
+#!/bin/bash
+
+function dmf_oset_ensuretmprights {
+    if test -d "/target/tmp"
+    then
+        chmod 1777 /target/tmp
+    fi
+    if test -d "/target/var/tmp"
+    then
+        chmod 1777 /target/var/tmp
+    fi
+}
+
+dmf_oset_ensuretmprights
