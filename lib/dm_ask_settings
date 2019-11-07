@@ -11,6 +11,7 @@ function dmf_ask_settings {
     . ./lib/dm_ask_raidspec
     . ./lib/dm_ask_poolname
     . ./lib/dm_ask_fscompression
+    . ./lib/dm_ask_boottype
     . ./lib/dm_ask_extrapackages
     . ./lib/dm_ask_timezones
     . ./lib/dm_ask_keyboard

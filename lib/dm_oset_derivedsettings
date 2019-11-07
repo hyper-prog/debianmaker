@@ -3,7 +3,7 @@
 function dmf_oset_derivedsettings {
 
     export PARTTYPE="EF02" # bios
-    if test "${BOOT}" = "EFI"
+    if test "${BOOTTYPE}" = "efi"
     then
         PARTTYPE="EF00" # efi
     fi

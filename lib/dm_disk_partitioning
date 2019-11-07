@@ -4,7 +4,7 @@ function dmf_disk_partitioning {
     for disk in ${DISKS}; do
     sgdisk -Z \
         -n9:-10M:0 -t9:bf07 -c9:${disk}9-Reserverd \
-        -n1:1M:+512M -t1:${PARTTYPE} -c1:${disk}1-${BOOT} \
+        -n1:1M:+512M -t1:${PARTTYPE} -c1:${disk}1-${BOOTTYPE} \
         -n2:0:0 -t2:bf01 -c2:${disk}-data /dev/${disk}
     done
 

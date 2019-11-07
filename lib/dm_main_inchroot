@@ -33,7 +33,14 @@ fi
 
 apt -y install gdisk dosfstools git rsync keyboard-configuration kbd man ${PACKAGES}
 
-. /dm_inchroot_lib/dm_chr_grubsetbiosboot
+if test "${BOOTTYPE}" = "bios"
+then
+    . /dm_inchroot_lib/dm_chr_grubsetbiosboot
+fi
+if test "${BOOTTYPE}" = "efi"
+then
+    . /dm_inchroot_lib/dm_chr_grubsetefiboot
+fi
 
 if test "${FSTYPE}" = "zfs"
 then
