@@ -1,0 +1,13 @@
+#!/bin/bash
+
+function dmf_oset_derivedsettings {
+
+    export PARTTYPE="EF02" # bios
+    if test "${BOOT}" = "EFI"
+    then
+        PARTTYPE="EF00" # efi
+    fi
+
+}
+
+dmf_oset_derivedsettings

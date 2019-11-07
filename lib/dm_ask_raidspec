@@ -17,10 +17,14 @@ function dmf_ask_raidspec {
     then
         RAIDSPEC="raidz"
     fi
-    read -e -p "Raid type of the disk array <empty|mirror|raidz> [${RAIDSPEC}]:" RAIDSPEC_R
-    if test -n "${RAIDSPEC_R}"
+
+    if test "${DISKNUM}" "-ge" "2"
     then
-        RAIDSPEC="${RAIDSPEC_R}"
+        read -e -p "Raid type of the disk array <empty|mirror|raidz> [${RAIDSPEC}]:" RAIDSPEC_R
+        if test -n "${RAIDSPEC_R}"
+        then
+            RAIDSPEC="${RAIDSPEC_R}"
+        fi
     fi
 }
 

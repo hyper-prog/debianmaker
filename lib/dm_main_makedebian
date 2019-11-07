@@ -15,13 +15,9 @@ then
     . ./lib/dm_ask_settings
 fi
 
-export PARTTYPE="EF02" # bios
-if test "${BOOT}" = "EFI"
-then
-    PARTTYPE="EF00" # efi
-fi
-
+. ./lib/dm_oset_derivedsettings
 . ./lib/dm_uni_fullupgrade
+. ./lib/dm_uni_installtools
 
 if test "${FSTYPE}" = "zfs"
 then

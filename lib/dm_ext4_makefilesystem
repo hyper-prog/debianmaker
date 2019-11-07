@@ -9,7 +9,8 @@ function dmf_ext4_makefilesystem {
     if test "${DISKNUM}" "-eq" "1"
     then
         echo ">>> Using single disk without raid..."
-        ONEDATAPART="/dev/${DISKS}"
+        STRIPPEDDISKNAME=$(echo ${DISKS} | sed 's/ //g')
+        ONEDATAPART="/dev/disk/by-partlabel/${STRIPPEDDISKNAME}-data"
     fi
     if test "${DISKNUM}" "-ge" "2"
     then
