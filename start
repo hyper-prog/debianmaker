@@ -1,4 +1,5 @@
 #!/bin/bash
 
+cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
 echo "Let's rock!"
 . ./lib/dm_main_makedebian
