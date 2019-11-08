@@ -8,6 +8,12 @@ function dmf_oset_derivedsettings {
         PARTTYPE="EF00" # efi
     fi
 
+    export TZAREA=$(echo ${TZAREAANDNAME} | cut -d '/' -f1 )
+    export TZNAME=$(echo ${TZAREAANDNAME} | cut -d '/' -f2 )
+
+    export KEYMODEL=$(echo ${KEYMODELLAYOUTVAR} | cut -d '/' -f1 )
+    export KEYLAYOUT=$(echo ${KEYMODELLAYOUTVAR} | cut -d '/' -f2 )
+    export KEYVARIANT=$(echo ${KEYMODELLAYOUTVAR} | cut -d '/' -f3 )
 }
 
 dmf_oset_derivedsettings

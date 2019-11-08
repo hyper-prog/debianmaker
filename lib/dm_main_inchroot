@@ -4,8 +4,14 @@ export LC_CTYPE=C
 
 . /dm_inchroot_lib/dm_uni_fullupgrade
 
+LOCALESLINEEND=""
+if test -n "${ADDITIONALLOCALE}"
+then
+    LOCALESLINEEND=", ${ADDITIONALLOCALE}.UTF-8 UTF-8"
+fi
+
 debconf-set-selections <<EOF
-locales locales/locales_to_be_generated multiselect en_US.UTF-8 UTF-8, hu_HU.UTF-8 UTF-8
+locales locales/locales_to_be_generated multiselect en_US.UTF-8 UTF-8${LOCALESLINEEND}
 locales locales/default_environment_locale select C.UTF-8
 debconf debconf/priority select critical
 debconf debconf/frontend select Noninteractive
@@ -14,7 +20,12 @@ tzdata tzdata/Zones/${TZAREA} select ${TZNAME}
 EOF
 
 apt -y install locales
-sed -e 's/^# hu_HU.UTF-8 UTF-8/hu_HU.UTF-8 UTF-8/' -e 's/^# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' -i /etc/locale.gen
+sed -e 's/^# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' -i /etc/locale.gen
+if test -n "${ADDITIONALLOCALE}"
+then
+    sed -e "s/^# ${ADDITIONALLOCALE}.UTF-8 UTF-8/${ADDITIONALLOCALE}.UTF-8 UTF-8/" -i /etc/locale.gen
+fi
+
 echo "${TZAREA}/${TZNAME}" > /etc/timezone
 ln -sf /usr/share/zoneinfo/${TZAREA}/${TZNAME} /etc/localtime
 dpkg-reconfigure debconf -f noninteractive -p critical

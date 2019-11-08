@@ -1,0 +1,45 @@
+#!/bin/bash
+
+function dmf_ask_targetregion {
+    local TARGETREGION_R
+    read -e -p "Target territory/region [${TARGETREGION}]:" TARGETREGION_R
+    if test -n "${TARGETREGION_R}"
+    then
+        TARGETREGION="${TARGETREGION_R}"
+        if test "${TARGETREGION}" "!=" "none"
+        then
+
+            if test -f regiondefaults
+            then
+                REGIONLINE=$(cat regiondefaults| grep "^${TARGETREGION} ")
+                if test -n "${REGIONLINE}"
+                then
+                    REGION_TOADDLOCALE=$(echo ${REGIONLINE} | awk '{print $2}')
+                    REGION_TOTIMEZONE=$(echo ${REGIONLINE} | awk '{print $3}')
+                    REGION_TOKEYBOARD=$(echo ${REGIONLINE} | awk '{print $4}')
+                    if test -n "${REGION_TOTIMEZONE}"
+                    then
+                        TZAREAANDNAME="${REGION_TOTIMEZONE}"
+                    fi
+                    if test -n "${REGION_TOKEYBOARD}"
+                    then
+                        KEYMODELLAYOUTVAR="${REGION_TOKEYBOARD}"
+                    fi
+                    if test -n "${REGION_TOADDLOCALE}"
+                    then
+                        if test "${REGION_TOADDLOCALE}" "!=" "none"
+                        then
+                            ADDITIONALLOCALE="${REGION_TOADDLOCALE}"
+                        fi
+                    fi
+                fi
+            else
+                echo "Cannot load regiondefaults file!"
+                exit 1;
+            fi
+
+        fi
+    fi
+}
+
+dmf_ask_targetregion

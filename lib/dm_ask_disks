@@ -6,7 +6,7 @@ function dmf_ask_disks {
     local DISKLINELIST
     if test -z "${DISKS}"
     then
-        DISKRAWLIST=$(cat /proc/partitions | grep -v "major" | grep -v "^\s*$" | awk '{print $4}' | grep '^sd[a-z]$')
+        DISKRAWLIST=$(cat /proc/partitions | grep -v "major" | grep -v "^\s*$" | awk '{print $4}' | sort | grep '^sd[a-z]$')
         DISKLINELIST=""
         for disk in ${DISKRAWLIST}
         do

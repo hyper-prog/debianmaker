@@ -9,8 +9,9 @@
 export DONTASK=""             # Can be "dontask"
 export LANG=C
 export LC_CTYPE=C
-export SERVERNAME="busterz"
+export SERVERNAME="buster"
 export DOMAIN="local"         # domain without hostname
+export TARGETREGION="none"    # Territory/Region "us" or "hu" or ...
 export FSTYPE="zfs"           # zfs or ext4
 export MAC=""                 # 00:12:23:ab:cd:ef
 export IFACE="ether0"         # lan0 ether0 wan1
@@ -26,11 +27,9 @@ export ZFSCOMP="off"          # "off" or "lz4"
 export DIST="debian"
 export RELEASE="buster"
 export PACKAGES=""            # extra packages to install
-export TZAREA="Europe"
-export TZNAME="Budapest"
-export KEYMODEL="pc105"
-export KEYLAYOUT="hu"
-export KEYVARIANT=""
+export ADDITIONALLOCALE=""    # For example: "hu_HU"
+export TZAREAANDNAME="America/New_York"
+export KEYMODELLAYOUTVAR="pc105/us"
 export NEEDDOCKER="n"         # "n" or "y"
 export SSHPERMITROOT="yes"    # "no" or "prohibit-password" or "yes"
 
