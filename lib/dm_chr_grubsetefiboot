@@ -8,30 +8,52 @@ function dmf_chr_grubsetefiboot {
 
     apt -y install grub-efi grub-efi-amd64 efibootmgr dosfstools rsync
 
+    echo ">>> Set EFI boot ..."
     for disk in ${DISKS}; do
         if test ! -n "${FIRSTDISK}"
             then
+                echo ">>> Set EFI boot to /dev/${disk} ..."
                 FIRSTDISK="/dev/${disk}1"
                 mkfs.fat -F 32 -n efi-boot /dev/${disk}1
                 if test ! -d "/boot/efi"
                 then
                     mkdir -p /boot/efi
                 fi
+                echo ">>> Mounting EFI(fat) /dev/${disk}1 to /boot/efi ..."
                 mount /dev/${disk}1 /boot/efi
+                echo ">>> Grub install to /dev/${disk} ..."
                 grub-install --efi-directory=/boot/efi --target=x86_64-efi /dev/$disk
                 echo -e "/dev/${disk}1\t/boot/efi\tvfat\tnoauto,noatime 1 2" >> /dev/fstab
             else
+                echo ">>> Set EFI boot to /dev/${disk} ..."
                 mkfs.fat -F 32 -n efi-boot /dev/${disk}1
                 if test ! -d "/boot/${disk}-efi"
                 then
                     mkdir -p /boot/${disk}-efi
                 fi
+                echo ">>> Mounting EFI(fat) /dev/${disk}1 to /boot/${disk}-efi ..."
                 mount /dev/${disk}1 /boot/${disk}-efi
+                echo ">>> Sync /boot/efi to /boot/${disk}-efi ..."
                 rsync -a /boot/efi/ /boot/${disk}-efi
             fi
     done
+
     update-initramfs -u -k all
     update-grub
+
+    FIRSTDISK=""
+    for disk in ${DISKS}; do
+        if test ! -n "${FIRSTDISK}"
+            then
+                FIRSTDISK="/dev/${disk}1"
+                echo ">>> Umounting /boot/efi ..."
+                umount /boot/efi
+            else
+                echo ">>> Umounting /boot/${disk}-efi ..."
+                umount /boot/${disk}-efi
+            fi
+    done
+
 }
 
 dmf_chr_grubsetefiboot
