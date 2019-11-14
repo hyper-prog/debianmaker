@@ -1,8 +1,8 @@
 #!/bin/bash
 
 function dmf_chr_lvmswapon {
-    mkswap /dev/${POOL}/${POOL}_swap
-    echo "/dev/${POOL}/${POOL}_swap none swap defaults 0 0" >> /etc/fstab
+    mkswap /dev/${DMC_POOL}/${DMC_POOL}_swap
+    echo "/dev/${DMC_POOL}/${DMC_POOL}_swap none swap defaults 0 0" >> /etc/fstab
 }
 
 dmf_chr_lvmswapon

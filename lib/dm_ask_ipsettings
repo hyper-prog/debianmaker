@@ -5,37 +5,37 @@ function dmf_ask_ipsettings {
     local IPADDRESS_R
     local GWADDRESS_R
     local DNSADDRESS_R
-    read -e -p "The configurable network interface obtain ip <dhcp | static > [${IPSRC}]:" IPSRC_R
+    read -e -p "The configurable network interface obtain ip <dhcp | static > [${DMC_IPSRC}]:" IPSRC_R
     if test -n "${IPSRC_R}"
     then
         if test "${IPSRC_R}" = "static"
         then
-            IPSRC="${IPSRC_R}"
+            DMC_IPSRC="${IPSRC_R}"
         fi
         if test "${IPSRC_R}" = "dhcp"
         then
-            IPSRC="${IPSRC_R}"
+            DMC_IPSRC="${IPSRC_R}"
         fi
     fi
 
     if test "${IPSRC_R}" = "static"
     then
-        read -e -p "IP address and mask of the network interface [${IPADDRESS}]:" IPADDRESS_R
+        read -e -p "IP address and mask of the network interface [${DMC_IPADDRESS}]:" IPADDRESS_R
         if test -n "${IPADDRESS_R}"
         then
-            IPADDRESS="${IPADDRESS_R}"
+            DMC_IPADDRESS="${IPADDRESS_R}"
         fi
 
-        read -e -p "Gateway address [${GWADDRESS}]:" GWADDRESS_R
+        read -e -p "Gateway address [${DMC_GWADDRESS}]:" GWADDRESS_R
         if test -n "${GWADDRESS_R}"
         then
-            GWADDRESS="${GWADDRESS_R}"
+            DMC_GWADDRESS="${GWADDRESS_R}"
         fi
 
-        read -e -p "DNS server address [${DNSADDRESS}]:" DNSADDRESS_R
+        read -e -p "DNS server address [${DMC_DNSADDRESS}]:" DNSADDRESS_R
         if test -n "${DNSADDRESS_R}"
         then
-            DNSADDRESS="${DNSADDRESS_R}"
+            DMC_DNSADDRESS="${DNSADDRESS_R}"
         fi
     fi
 }

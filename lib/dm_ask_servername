@@ -2,10 +2,10 @@
 
 function dmf_ask_servername {
     local SERVERNAME_R
-    read -e -p "Hostname of the computer [${SERVERNAME}]:" SERVERNAME_R
+    read -e -p "Hostname of the computer [${DMC_SERVERNAME}]:" SERVERNAME_R
     if test -n "${SERVERNAME_R}"
     then
-        SERVERNAME=${SERVERNAME_R}
+        DMC_SERVERNAME=${SERVERNAME_R}
     fi
 }
 

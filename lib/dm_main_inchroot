@@ -5,9 +5,9 @@ export LC_CTYPE=C
 . /dm_inchroot_lib/dm_uni_fullupgrade
 
 LOCALESLINEEND=""
-if test -n "${ADDITIONALLOCALE}"
+if test -n "${DMC_ADDITIONALLOCALE}"
 then
-    LOCALESLINEEND=", ${ADDITIONALLOCALE}.UTF-8 UTF-8"
+    LOCALESLINEEND=", ${DMC_ADDITIONALLOCALE}.UTF-8 UTF-8"
 fi
 
 debconf-set-selections <<EOF
@@ -15,51 +15,51 @@ locales locales/locales_to_be_generated multiselect en_US.UTF-8 UTF-8${LOCALESLI
 locales locales/default_environment_locale select C.UTF-8
 debconf debconf/priority select critical
 debconf debconf/frontend select Noninteractive
-tzdata tzdata/Areas select ${TZAREA}
-tzdata tzdata/Zones/${TZAREA} select ${TZNAME}
+tzdata tzdata/Areas select ${DMC_TZAREA}
+tzdata tzdata/Zones/${DMC_TZAREA} select ${DMC_TZNAME}
 EOF
 
 apt -y install locales
 sed -e 's/^# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' -i /etc/locale.gen
-if test -n "${ADDITIONALLOCALE}"
+if test -n "${DMC_ADDITIONALLOCALE}"
 then
-    sed -e "s/^# ${ADDITIONALLOCALE}.UTF-8 UTF-8/${ADDITIONALLOCALE}.UTF-8 UTF-8/" -i /etc/locale.gen
+    sed -e "s/^# ${DMC_ADDITIONALLOCALE}.UTF-8 UTF-8/${DMC_ADDITIONALLOCALE}.UTF-8 UTF-8/" -i /etc/locale.gen
 fi
 
-echo "${TZAREA}/${TZNAME}" > /etc/timezone
-ln -sf /usr/share/zoneinfo/${TZAREA}/${TZNAME} /etc/localtime
+echo "${DMC_TZAREA}/${DMC_TZNAME}" > /etc/timezone
+ln -sf /usr/share/zoneinfo/${DMC_TZAREA}/${DMC_TZNAME} /etc/localtime
 dpkg-reconfigure debconf -f noninteractive -p critical
 locale-gen
 update-locale LANG=C.UTF-8
 apt -y install --no-install-recommends linux-image-amd64 linux-headers-amd64 linux-libc-dev:amd64
 
-if test "${FSTYPE}" = "zfs"
+if test "${DMC_FSTYPE}" = "zfs"
 then
     apt -y install zfsutils-linux zfs-zed dkms zfs-dkms zfs-initramfs spl-dkms spl
 fi
-if test "${FSTYPE}" = "ext4"
+if test "${DMC_FSTYPE}" = "ext4"
 then
     apt -y install lvm2 mdadm
 fi
 
-apt -y install gdisk dosfstools git rsync keyboard-configuration kbd man ${PACKAGES}
+apt -y install gdisk dosfstools git rsync keyboard-configuration kbd man ${DMC_PACKAGES}
 
-if test "${BOOTTYPE}" = "bios"
+if test "${DMC_BOOTTYPE}" = "bios"
 then
     . /dm_inchroot_lib/dm_chr_grubsetbiosboot
 fi
-if test "${BOOTTYPE}" = "efi"
+if test "${DMC_BOOTTYPE}" = "efi"
 then
     . /dm_inchroot_lib/dm_chr_grubsetefiboot
 fi
 
-if test "${FSTYPE}" = "zfs"
+if test "${DMC_FSTYPE}" = "zfs"
 then
     . /dm_inchroot_lib/dm_chr_zfsswapon
     . /dm_inchroot_lib/dm_chr_zfssetparameters
 fi
 
-if test "${FSTYPE}" = "ext4"
+if test "${DMC_FSTYPE}" = "ext4"
 then
     . /dm_inchroot_lib/dm_chr_lvmswapon
 fi
@@ -67,7 +67,7 @@ fi
 . /dm_inchroot_lib/dm_chr_setrootpassword
 . /dm_inchroot_lib/dm_chr_installssh
 
-if test "${NEEDDOCKER}" = "y"
+if test "${DMC_NEEDDOCKER}" = "y"
 then
     . /dm_inchroot_lib/dm_chr_docker
 fi

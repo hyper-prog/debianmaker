@@ -1,23 +1,25 @@
 #!/bin/bash
 
 function dmf_ext4_makefilesystem {
-    PARTS=$(for disk in ${DISKS} ; do echo -n "/dev/disk/by-partlabel/${disk}-data "; done)
-
+    local PARTS
     local DISKNUM
-    export ONEDATAPART=""
-    DISKNUM=$(echo "${DISKS}"|wc -w)
+
+    PARTS=$(for disk in ${DMC_DISKS} ; do echo -n "/dev/disk/by-partlabel/${disk}-data "; done)
+
+    export DMC_ONEDATAPART=""
+    DISKNUM=$(echo "${DMC_DISKS}"|wc -w)
     if test "${DISKNUM}" "-eq" "1"
     then
         echo ">>> Using single disk without raid..."
-        STRIPPEDDISKNAME=$(echo ${DISKS} | sed 's/ //g')
-        ONEDATAPART="/dev/disk/by-partlabel/${STRIPPEDDISKNAME}-data"
+        STRIPPEDDISKNAME=$(echo ${DMC_DISKS} | sed 's/ //g')
+        DMC_ONEDATAPART="/dev/disk/by-partlabel/${STRIPPEDDISKNAME}-data"
     fi
     if test "${DISKNUM}" "-ge" "2"
     then
         echo ">>> Create a soft raid array..."
-        ONEDATAPART="/dev/md0"
-        mdadm --create ${ONEDATAPART} \
-              --level=${RAIDSPEC} \
+        DMC_ONEDATAPART="/dev/md0"
+        mdadm --create ${DMC_ONEDATAPART} \
+              --level=${DMC_RAIDSPEC} \
               --raid-devices=${DISKNUM} \
               --force --run --metadata=0.90 ${PARTS}
     fi
@@ -25,32 +27,32 @@ function dmf_ext4_makefilesystem {
     sleep 2
 
     echo ">>> Create LVM on disk(s)..."
-    pvcreate -ff --yes ${ONEDATAPART}
+    pvcreate -ff --yes ${DMC_ONEDATAPART}
     sleep 2
-    vgcreate ${POOL} ${ONEDATAPART}
+    vgcreate ${DMC_POOL} ${DMC_ONEDATAPART}
     sleep 2
     echo ">>> Create volumes on LVM ..."
-    lvcreate --yes -n ${POOL}_vol_varlog -L 2G ${POOL}
-    lvcreate --yes -n ${POOL}_vol_var -L 5G ${POOL}
-    lvcreate --yes -n ${POOL}_swap -L 1G ${POOL}
-    lvcreate --yes -n ${POOL}_vol_root -l 80%FREE ${POOL}
+    lvcreate --yes -n ${DMC_POOL}_vol_varlog -L 2G ${DMC_POOL}
+    lvcreate --yes -n ${DMC_POOL}_vol_var -L 5G ${DMC_POOL}
+    lvcreate --yes -n ${DMC_POOL}_swap -L 1G ${DMC_POOL}
+    lvcreate --yes -n ${DMC_POOL}_vol_root -l 80%FREE ${DMC_POOL}
 
     sleep 2
     echo ">>> Formatting ext4 filesystems..."
-    mkfs.ext4 -F /dev/mapper/${POOL}-${POOL}_vol_root
-    mkfs.ext4 -F -T news /dev/mapper/${POOL}-${POOL}_vol_var
-    mkfs.ext4 -T news /dev/mapper/${POOL}-${POOL}_vol_varlog
+    mkfs.ext4 -F /dev/mapper/${DMC_POOL}-${DMC_POOL}_vol_root
+    mkfs.ext4 -F -T news /dev/mapper/${DMC_POOL}-${DMC_POOL}_vol_var
+    mkfs.ext4 -T news /dev/mapper/${DMC_POOL}-${DMC_POOL}_vol_varlog
 
-    FSUUIDOF_ROOT=$(blkid -s UUID -o value /dev/mapper/${POOL}-${POOL}_vol_root)
-    FSUUIDOF_VAR=$(blkid -s UUID -o value /dev/mapper/${POOL}-${POOL}_vol_var)
-    FSUUIDOF_VARLOG=$(blkid -s UUID -o value /dev/mapper/${POOL}-${POOL}_vol_varlog)
+    FSUUIDOF_ROOT=$(blkid -s UUID -o value /dev/mapper/${DMC_POOL}-${DMC_POOL}_vol_root)
+    FSUUIDOF_VAR=$(blkid -s UUID -o value /dev/mapper/${DMC_POOL}-${DMC_POOL}_vol_var)
+    FSUUIDOF_VARLOG=$(blkid -s UUID -o value /dev/mapper/${DMC_POOL}-${DMC_POOL}_vol_varlog)
 
     mkdir -p /target
-    mount /dev/mapper/${POOL}-${POOL}_vol_root /target
+    mount /dev/mapper/${DMC_POOL}-${DMC_POOL}_vol_root /target
     mkdir -p /target/var
-    mount /dev/mapper/${POOL}-${POOL}_vol_var /target/var
+    mount /dev/mapper/${DMC_POOL}-${DMC_POOL}_vol_var /target/var
     mkdir -p /target/var/log
-    mount /dev/mapper/${POOL}-${POOL}_vol_varlog /target/var/log
+    mount /dev/mapper/${DMC_POOL}-${DMC_POOL}_vol_varlog /target/var/log
 }
 
 dmf_ext4_makefilesystem

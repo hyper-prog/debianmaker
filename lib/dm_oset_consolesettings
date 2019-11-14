@@ -3,12 +3,12 @@
 function dmf_oset_consolesettings {
     local FTOW
     FTOW="/target/etc/default/keyboard"
-    echo -e "XKBMODEL=\"${KEYMODEL}\""      > ${FTOW}
-    echo -e "XKBLAYOUT=\"${KEYLAYOUT}\""    >> ${FTOW}
-    echo -e "XKBVARIANT=\"${KEYVARIANT}\""  >> ${FTOW}
-    echo -e "XKBOPTIONS=\"\""               >> ${FTOW}
-    echo -e ""                              >> ${FTOW}
-    echo -e "BACKSPACE=\"guess\""           >> ${FTOW}
+    echo -e "XKBMODEL=\"${DMC_KEYMODEL}\""      > ${FTOW}
+    echo -e "XKBLAYOUT=\"${DMC_KEYLAYOUT}\""    >> ${FTOW}
+    echo -e "XKBVARIANT=\"${DMC_KEYVARIANT}\""  >> ${FTOW}
+    echo -e "XKBOPTIONS=\"\""                   >> ${FTOW}
+    echo -e ""                                  >> ${FTOW}
+    echo -e "BACKSPACE=\"guess\""               >> ${FTOW}
 
     FTOW="/target/etc/default/console-setup"
     echo -e "# CONFIGURATION FILE FOR SETUPCON" > ${FTOW}

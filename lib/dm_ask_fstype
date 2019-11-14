@@ -2,10 +2,10 @@
 
 function dmf_ask_fstype {
     local FSTYPE_R
-    read -e -p "Filesystem on the disks <zfs|ext4> [${FSTYPE}]:" FSTYPE_R
+    read -e -p "Filesystem on the disks <zfs|ext4> [${DMC_FSTYPE}]:" FSTYPE_R
     if test -n "${FSTYPE_R}"
     then
-        FSTYPE="${FSTYPE_R}"
+        DMC_FSTYPE="${FSTYPE_R}"
     fi
 }
 

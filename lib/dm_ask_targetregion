@@ -2,16 +2,20 @@
 
 function dmf_ask_targetregion {
     local TARGETREGION_R
-    read -e -p "Target territory/region [${TARGETREGION}]:" TARGETREGION_R
+    local REGIONLINE
+    local REGION_TOADDLOCALE
+    local REGION_TOTIMEZONE
+    local REGION_TOKEYBOARD
+    read -e -p "Target territory/region [${DMC_TARGETREGION}]:" TARGETREGION_R
     if test -n "${TARGETREGION_R}"
     then
-        TARGETREGION="${TARGETREGION_R}"
-        if test "${TARGETREGION}" "!=" "none"
+        DMC_TARGETREGION="${TARGETREGION_R}"
+        if test "${DMC_TARGETREGION}" "!=" "none"
         then
 
             if test -f regiondefaults
             then
-                REGIONLINE=$(cat regiondefaults| grep "^${TARGETREGION} ")
+                REGIONLINE=$(cat regiondefaults| grep "^${DMC_TARGETREGION} ")
                 if test -n "${REGIONLINE}"
                 then
                     REGION_TOADDLOCALE=$(echo ${REGIONLINE} | awk '{print $2}')
@@ -19,17 +23,17 @@ function dmf_ask_targetregion {
                     REGION_TOKEYBOARD=$(echo ${REGIONLINE} | awk '{print $4}')
                     if test -n "${REGION_TOTIMEZONE}"
                     then
-                        TZAREAANDNAME="${REGION_TOTIMEZONE}"
+                        DMC_TZAREAANDNAME="${REGION_TOTIMEZONE}"
                     fi
                     if test -n "${REGION_TOKEYBOARD}"
                     then
-                        KEYMODELLAYOUTVAR="${REGION_TOKEYBOARD}"
+                        DMC_KEYMODELLAYOUTVAR="${REGION_TOKEYBOARD}"
                     fi
                     if test -n "${REGION_TOADDLOCALE}"
                     then
                         if test "${REGION_TOADDLOCALE}" "!=" "none"
                         then
-                            ADDITIONALLOCALE="${REGION_TOADDLOCALE}"
+                            DMC_ADDITIONALLOCALE="${REGION_TOADDLOCALE}"
                         fi
                     fi
                 fi

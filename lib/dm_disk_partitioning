@@ -1,11 +1,10 @@
 #!/bin/bash
 
 function dmf_disk_partitioning {
-    for disk in ${DISKS}; do
+    for disk in ${DMC_DISKS}; do
     sgdisk -Z \
-        -n9:-10M:0 -t9:bf07 -c9:${disk}9-Reserverd \
-        -n1:1M:+512M -t1:${PARTTYPE} -c1:${disk}1-${BOOTTYPE} \
-        -n2:0:0 -t2:bf01 -c2:${disk}-data /dev/${disk}
+        -n1:1M:+512M -t1:${DMC_RESPARTTYPE} -c1:${disk}1-${DMC_BOOTTYPE} \
+        -n2:0:-${DMC_RESERVERDDISKTAIL} -t2:${DMC_DATPARTTYPE} -c2:${disk}-data /dev/${disk}
     done
 
     sleep 10

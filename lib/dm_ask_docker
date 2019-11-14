@@ -2,10 +2,10 @@
 
 function dmf_ask_docker {
     local NEEDDOCKER_R
-    read -e -p "Do you need docker to be installed? <y|n> [${NEEDDOCKER}]:" NEEDDOCKER_R
+    read -e -p "Do you need docker to be installed? <y|n> [${DMC_NEEDDOCKER}]:" NEEDDOCKER_R
     if test -n "${NEEDDOCKER_R}"
     then
-        NEEDDOCKER="${NEEDDOCKER_R}"
+        DMC_NEEDDOCKER="${NEEDDOCKER_R}"
     fi
 }
 

@@ -2,37 +2,37 @@
 
 function dmf_oset_networksettings {
     local FTOW
-    echo "127.0.1.1 ${SERVERNAME}.${DOMAIN} ${SERVERNAME}" >> /target/etc/hosts
+    echo "127.0.1.1 ${DMC_SERVERNAME}.${DMC_DOMAIN} ${DMC_SERVERNAME}" >> /target/etc/hosts
 
     FTOW="/target/etc/systemd/network/10-persistent-net.link"
-    echo -e "[Match]\nMACAddress=${MAC}\n"                > ${FTOW}
-    echo -e "[Link]\nName=${IFACE}"                       >> ${FTOW}
+    echo -e "[Match]\nMACAddress=${DMC_MAC}\n"                > ${FTOW}
+    echo -e "[Link]\nName=${DMC_IFACE}"                       >> ${FTOW}
 
     FTOW="/target/etc/network/interfaces"
-    echo -e "# The loopback interface"                    > ${FTOW}
-    echo -e "auto lo\niface lo inet loopback"             >> ${FTOW}
-    echo -e ""                                            >> ${FTOW}
-    echo -e "# Other interface files"                     >> ${FTOW}
-    echo -e "source-directory /etc/network/interfaces.d"  >> ${FTOW}
+    echo -e "# The loopback interface"                        > ${FTOW}
+    echo -e "auto lo\niface lo inet loopback"                 >> ${FTOW}
+    echo -e ""                                                >> ${FTOW}
+    echo -e "# Other interface files"                         >> ${FTOW}
+    echo -e "source-directory /etc/network/interfaces.d"      >> ${FTOW}
 
-    if test "${IPSRC}" = "static"
+    if test "${DMC_IPSRC}" = "static"
     then
-        FTOW="/target/etc/network/interfaces.d/${IFACE}"
-        echo -e "allow-hotplug ${IFACE}"                 > ${FTOW}
-        echo -e "iface ${IFACE} inet static"             >> ${FTOW}
-        echo -e "\taddress ${IPADDRESS}"                 >> ${FTOW}
-        echo -e "\tgateway ${GWADDRESS}"                 >> ${FTOW}
-        echo -e "\tdns-nameservers ${DNSADDRESS}"        >> ${FTOW}
-        echo -e "\tdns-search ${DOMAIN}"                 >> ${FTOW}
+        FTOW="/target/etc/network/interfaces.d/${DMC_IFACE}"
+        echo -e "allow-hotplug ${DMC_IFACE}"                 > ${FTOW}
+        echo -e "iface ${DMC_IFACE} inet static"             >> ${FTOW}
+        echo -e "\taddress ${DMC_IPADDRESS}"                 >> ${FTOW}
+        echo -e "\tgateway ${DMC_GWADDRESS}"                 >> ${FTOW}
+        echo -e "\tdns-nameservers ${DMC_DNSADDRESS}"        >> ${FTOW}
+        echo -e "\tdns-search ${DMC_DOMAIN}"                 >> ${FTOW}
 
-        echo "nameserver ${DNSADDRESS}" > /target/etc/resolv.conf
+        echo "nameserver ${DMC_DNSADDRESS}" > /target/etc/resolv.conf
     fi
 
-    if test "${IPSRC}" = "dhcp"
+    if test "${DMC_IPSRC}" = "dhcp"
     then
-        FTOW="/target/etc/network/interfaces.d/${IFACE}"
-        echo -e "allow-hotplug ${IFACE}"               > ${FTOW}
-        echo -e "iface ${IFACE} inet dhcp"             >> ${FTOW}
+        FTOW="/target/etc/network/interfaces.d/${DMC_IFACE}"
+        echo -e "allow-hotplug ${DMC_IFACE}"                > ${FTOW}
+        echo -e "iface ${DMC_IFACE} inet dhcp"              >> ${FTOW}
     fi
 }
 

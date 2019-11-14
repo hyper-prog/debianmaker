@@ -2,10 +2,10 @@
 
 function dmf_ask_timezones {
     local TZAREAANDNAME_R
-    read -e -p "Timezone area/name [${TZAREAANDNAME}]:" TZAREAANDNAME_R
+    read -e -p "Timezone area/name [${DMC_TZAREAANDNAME}]:" TZAREAANDNAME_R
     if test -n "${TZAREAANDNAME_R}"
     then
-        TZAREAANDNAME="${TZAREAANDNAME_R}"
+        DMC_TZAREAANDNAME="${TZAREAANDNAME_R}"
     fi
 }
 

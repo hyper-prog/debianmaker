@@ -16,12 +16,12 @@ function dmf_ask_disks {
             fi
             DISKLINELIST="${DISKLINELIST}${disk}"
         done
-        DISKS="${DISKLINELIST}"
+        DMC_DISKS="${DISKLINELIST}"
     fi
-    read -e -p "List of the disks under /dev to use [${DISKS}]:" DISKS_R
+    read -e -p "List of the disks under /dev to use [${DMC_DISKS}]:" DISKS_R
     if test -n "${DISKS_R}"
     then
-        DISKS="${DISKS_R}"
+        DMC_DISKS="${DISKS_R}"
     fi
 }
 

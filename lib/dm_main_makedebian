@@ -4,13 +4,16 @@
 # Author: Peter Deak (hyper80@gmail.com)
 # License: GPL,  No warrantly, use at you own risk!
 
-if test "${DONTRUNCONF}" "!=" "dontrunconf"
+export LANG=C
+export LC_CTYPE=C
+
+if test "${DMC_DONTRUNCONF}" "!=" "dontrunconf"
 then
     . ./conf
 fi
 
 # #########################################################################
-if test "${DONTASK}" "!=" "dontask"
+if test "${DMC_DONTASK}" "!=" "dontask"
 then
     . ./lib/dm_ask_settings
 fi
@@ -19,19 +22,19 @@ fi
 . ./lib/dm_uni_fullupgrade
 . ./lib/dm_uni_installtools
 
-if test "${FSTYPE}" = "zfs"
+if test "${DMC_FSTYPE}" = "zfs"
 then
     . ./lib/dm_zfs_zfsforlive
 fi
 
 . ./lib/dm_disk_partitioning
 
-if test "${FSTYPE}" = "zfs"
+if test "${DMC_FSTYPE}" = "zfs"
 then
     . ./lib/dm_zfs_makefilesystem
 fi
 
-if test "${FSTYPE}" = "ext4"
+if test "${DMC_FSTYPE}" = "ext4"
 then
     . ./lib/dm_ext4_makefilesystem
 fi
@@ -44,7 +47,7 @@ fi
 . ./lib/dm_oset_sourceslist
 . ./lib/dm_oset_consolesettings
 
-if test "${FSTYPE}" = "ext4"
+if test "${DMC_FSTYPE}" = "ext4"
 then
     . ./lib/dm_ext4_filesystemsettings
 fi
@@ -53,11 +56,11 @@ fi
 . ./lib/dm_main_startchroot
 . ./lib/dm_oset_unmapdevprocsys
 
-if test "${FSTYPE}" = "zfs"
+if test "${DMC_FSTYPE}" = "zfs"
 then
     . ./lib/dm_zfs_detachfilesystem
 fi
-if test "${FSTYPE}" = "ext4"
+if test "${DMC_FSTYPE}" = "ext4"
 then
     . ./lib/dm_ext4_detachfilesystem
 fi

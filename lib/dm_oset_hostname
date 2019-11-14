@@ -1,7 +1,7 @@
 #!/bin/bash
 
 function dmf_set_hostname {
-    echo ${SERVERNAME} > /target/etc/hostname
+    echo ${DMC_SERVERNAME} > /target/etc/hostname
 }
 
 dmf_set_hostname

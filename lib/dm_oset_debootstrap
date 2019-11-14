@@ -2,7 +2,7 @@
 
 function dmf_oset_debootstrap {
     apt -y install debootstrap
-    debootstrap ${RELEASE} /target
+    debootstrap ${DMC_RELEASE} /target
 }
 
 dmf_oset_debootstrap

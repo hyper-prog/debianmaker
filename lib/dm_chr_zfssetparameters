@@ -1,23 +1,23 @@
 #!/bin/bash
 
 function dmf_chr_zfssetparameters {
-    zfs set quota=1G ${POOL}/tmp
-    zfs set quota=11G ${POOL}/var
-    zfs set quota=3G ${POOL}/var/cache
-    zfs set quota=1G ${POOL}/var/lib
-    zfs set quota=5G ${POOL}/var/log
-    zfs set quota=1G ${POOL}/var/spool
-    zfs set quota=1G ${POOL}/var/tmp
-    zfs set quota=10G ${POOL}/home
-    zfs set refreservation=2G ${POOL}/ROOT/${DIST}
-    zfs set reservation=10G ${POOL}/ROOT
-    zfs set refquota=5G ${POOL}/ROOT/${DIST}
-    zfs set reservation=1G ${POOL}/root
-    zfs set reservation=3G ${POOL}/var
-    zfs set reservation=1G ${POOL}/var/lib
-    zfs set reservation=1G ${POOL}/var/log
+    zfs set quota=1G ${DMC_POOL}/tmp
+    zfs set quota=11G ${DMC_POOL}/var
+    zfs set quota=3G ${DMC_POOL}/var/cache
+    zfs set quota=1G ${DMC_POOL}/var/lib
+    zfs set quota=5G ${DMC_POOL}/var/log
+    zfs set quota=1G ${DMC_POOL}/var/spool
+    zfs set quota=1G ${DMC_POOL}/var/tmp
+    zfs set quota=10G ${DMC_POOL}/home
+    zfs set refreservation=2G ${DMC_POOL}/ROOT/${DMC_DIST}
+    zfs set reservation=10G ${DMC_POOL}/ROOT
+    zfs set refquota=5G ${DMC_POOL}/ROOT/${DMC_DIST}
+    zfs set reservation=1G ${DMC_POOL}/root
+    zfs set reservation=3G ${DMC_POOL}/var
+    zfs set reservation=1G ${DMC_POOL}/var/lib
+    zfs set reservation=1G ${DMC_POOL}/var/log
 
-    zfs set acltype=posixacl ${POOL}
+    zfs set acltype=posixacl ${DMC_POOL}
 }
 
 dmf_chr_zfssetparameters

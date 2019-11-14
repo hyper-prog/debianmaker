@@ -2,10 +2,10 @@
 
 function dmf_ask_keyboard {
     local KEYMODELLAYOUTVAR_R
-    read -e -p "Keyboard model/layout/variant [${KEYMODELLAYOUTVAR}]:" KEYMODELLAYOUTVAR_R
+    read -e -p "Keyboard model/layout/variant [${DMC_KEYMODELLAYOUTVAR}]:" KEYMODELLAYOUTVAR_R
     if test -n "${KEYMODELLAYOUTVAR_R}"
     then
-        KEYMODELLAYOUTVAR="${KEYMODELLAYOUTVAR_R}"
+        DMC_KEYMODELLAYOUTVAR="${KEYMODELLAYOUTVAR_R}"
     fi
 }
 

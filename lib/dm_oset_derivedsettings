@@ -1,19 +1,31 @@
 #!/bin/bash
 
 function dmf_oset_derivedsettings {
+    local DISKNUM
 
-    export PARTTYPE="EF02" # bios
-    if test "${BOOTTYPE}" = "efi"
+    export DMC_RESPARTTYPE="ef02" # bios
+    if test "${DMC_BOOTTYPE}" = "efi"
     then
-        PARTTYPE="EF00" # efi
+        DMC_RESPARTTYPE="ef00" # efi
     fi
 
-    export TZAREA=$(echo ${TZAREAANDNAME} | cut -d '/' -f1 )
-    export TZNAME=$(echo ${TZAREAANDNAME} | cut -d '/' -f2 )
+    export DMC_DATPARTTYPE="bf01"
+    DISKNUM=$(echo "${DMC_DISKS}"|wc -w)
+    if test "${DMC_FSTYPE}" = "ext4"
+    then
+        DMC_DATPARTTYPE="8e00" # Linux LVM
+        if test "${DISKNUM}" "-ge" "2"
+        then
+            DMC_DATPARTTYPE="fd00" # Linux RAID
+        fi
+    fi
 
-    export KEYMODEL=$(echo ${KEYMODELLAYOUTVAR} | cut -d '/' -f1 )
-    export KEYLAYOUT=$(echo ${KEYMODELLAYOUTVAR} | cut -d '/' -f2 )
-    export KEYVARIANT=$(echo ${KEYMODELLAYOUTVAR} | cut -d '/' -f3 )
+    export DMC_TZAREA=$(echo ${DMC_TZAREAANDNAME} | cut -d '/' -f1 )
+    export DMC_TZNAME=$(echo ${DMC_TZAREAANDNAME} | cut -d '/' -f2 )
+
+    export DMC_KEYMODEL=$(echo ${DMC_KEYMODELLAYOUTVAR} | cut -d '/' -f1 )
+    export DMC_KEYLAYOUT=$(echo ${DMC_KEYMODELLAYOUTVAR} | cut -d '/' -f2 )
+    export DMC_KEYVARIANT=$(echo ${DMC_KEYMODELLAYOUTVAR} | cut -d '/' -f3 )
 }
 
 dmf_oset_derivedsettings

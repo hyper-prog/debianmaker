@@ -2,12 +2,12 @@
 
 function dmf_ask_fscompression {
     local ZFSCOMP_R
-    if test "${FSTYPE}" = "zfs"
+    if test "${DMC_FSTYPE}" = "zfs"
     then
-        read -e -p "The zfs compression <off|lz4> [${ZFSCOMP}]:" ZFSCOMP_R
+        read -e -p "The zfs compression <off|lz4> [${DMC_ZFSCOMP}]:" ZFSCOMP_R
         if test -n "${ZFSCOMP_R}"
         then
-            ZFSCOMP="${ZFSCOMP_R}"
+            DMC_ZFSCOMP="${ZFSCOMP_R}"
         fi
     fi
 }
