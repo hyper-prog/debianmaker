@@ -1,0 +1,18 @@
+#!/bin/bash
+
+function dmf_chr_lvmswapon {
+
+   cat lvm_volumes | grep -v '^#' | grep -v '^\s*$' | \
+    while IFS= read -r line; do
+        LIN_LVNAME=$(echo ${line} | awk '{print $2}')
+        LIN_MNTPOINT=$(echo ${line} | awk '{print $3}')
+        if test "${LIN_MNTPOINT}" "=" "swap"
+        then
+            mkswap /dev/${DMC_POOL}/${DMC_POOL}_${LIN_LVNAME}
+            echo "/dev/${DMC_POOL}/${DMC_POOL}_${LIN_LVNAME} none swap defaults 0 0" >> /target/etc/fstab
+        fi
+    done
+
+}
+
+dmf_chr_lvmswapon

@@ -1,0 +1,14 @@
+# V=mount_order number
+#     V=lvm logical volume name
+#                 V=filesystem mount point
+#                           V=size specification of lvcreate
+#                             (2G, 512M, 80%FREE, 20%VG, 15%PVS ) Creation runs in row order
+#                                      V=filesystem format type
+#                                               V=mount options
+
+  3   vol_varlog  /var/log  2G         news     defaults,noexec
+  2   vol_var     /var      5G         news     defaults
+  0   swap        swap      1G         none     none
+  1   vol_root    /         80%FREE    none     errors=remount-ro
+
+

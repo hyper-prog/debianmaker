@@ -31,28 +31,60 @@ function dmf_ext4_makefilesystem {
     sleep 2
     vgcreate ${DMC_POOL} ${DMC_ONEDATAPART}
     sleep 2
+
     echo ">>> Create volumes on LVM ..."
-    lvcreate --yes -n ${DMC_POOL}_vol_varlog -L 2G ${DMC_POOL}
-    lvcreate --yes -n ${DMC_POOL}_vol_var -L 5G ${DMC_POOL}
-    lvcreate --yes -n ${DMC_POOL}_swap -L 1G ${DMC_POOL}
-    lvcreate --yes -n ${DMC_POOL}_vol_root -l 80%FREE ${DMC_POOL}
+    cat lvm_volumes | grep -v '^#' | grep -v '^\s*$' | \
+    while IFS= read -r line; do
+        LIN_LVNAME=$(echo ${line} | awk '{print $2}')
+        LIN_MNTPOINT=$(echo ${line} | awk '{print $3}')
+        LIN_LVSIZE=$(echo ${line} | awk '{print $4}')
+        LIN_LVSIZE_FILT=$(echo ${LIN_LVSIZE} | grep '%')
+        LIN_LVSIZE_SWITCH="-l"
+        if test "${LIN_LVSIZE_FILT}" "=" ""
+        then
+            LIN_LVSIZE_SWITCH="-L"
+        fi
+        echo " >>> Create logical volume ..."
+        echo " lvcreate --yes -n ${DMC_POOL}_${LIN_LVNAME} ${LIN_LVSIZE_SWITCH} ${LIN_LVSIZE} ${DMC_POOL}"
+        lvcreate --yes -n ${DMC_POOL}_${LIN_LVNAME} ${LIN_LVSIZE_SWITCH} ${LIN_LVSIZE} ${DMC_POOL}
+    done
 
     sleep 2
     echo ">>> Formatting ext4 filesystems..."
-    mkfs.ext4 -F /dev/mapper/${DMC_POOL}-${DMC_POOL}_vol_root
-    mkfs.ext4 -F -T news /dev/mapper/${DMC_POOL}-${DMC_POOL}_vol_var
-    mkfs.ext4 -T news /dev/mapper/${DMC_POOL}-${DMC_POOL}_vol_varlog
+    cat lvm_volumes | grep -v '^#' | grep -v '^\s*$' | \
+    while IFS= read -r line; do
+        LIN_LVNAME=$(echo ${line} | awk '{print $2}')
+        LIN_MNTPOINT=$(echo ${line} | awk '{print $3}')
+        LIN_FSFORMTYPE=$(echo ${line} | awk '{print $5}')
+        if test "${LIN_MNTPOINT}" "!=" "swap"
+        then
+            EXTFOURTYPE=""
+            if test "${LIN_FSFORMTYPE}" "!=" "none"
+            then
+                EXTFOURTYPE="-T ${LIN_FSFORMTYPE}"
+            fi
+            echo " >>> Format logical volume ..."
+            echo " mkfs.ext4 ${EXTFOURTYPE} -F /dev/mapper/${DMC_POOL}-${DMC_POOL}_${LIN_LVNAME}"
+            mkfs.ext4 ${EXTFOURTYPE} -F /dev/mapper/${DMC_POOL}-${DMC_POOL}_${LIN_LVNAME}
+        fi
+    done
 
-    FSUUIDOF_ROOT=$(blkid -s UUID -o value /dev/mapper/${DMC_POOL}-${DMC_POOL}_vol_root)
-    FSUUIDOF_VAR=$(blkid -s UUID -o value /dev/mapper/${DMC_POOL}-${DMC_POOL}_vol_var)
-    FSUUIDOF_VARLOG=$(blkid -s UUID -o value /dev/mapper/${DMC_POOL}-${DMC_POOL}_vol_varlog)
+    # FSUUIDOF_ROOT=$(blkid -s UUID -o value /dev/mapper/${DMC_POOL}-${DMC_POOL}_vol_root)
+    # FSUUIDOF_VAR=$(blkid -s UUID -o value /dev/mapper/${DMC_POOL}-${DMC_POOL}_vol_var)
+    # FSUUIDOF_VARLOG=$(blkid -s UUID -o value /dev/mapper/${DMC_POOL}-${DMC_POOL}_vol_varlog)
 
-    mkdir -p /target
-    mount /dev/mapper/${DMC_POOL}-${DMC_POOL}_vol_root /target
-    mkdir -p /target/var
-    mount /dev/mapper/${DMC_POOL}-${DMC_POOL}_vol_var /target/var
-    mkdir -p /target/var/log
-    mount /dev/mapper/${DMC_POOL}-${DMC_POOL}_vol_varlog /target/var/log
+    echo ">>> Mounting filesystems..."
+    cat lvm_volumes | grep -v '^#' | grep -v '^\s*$' | sort | \
+    while IFS= read -r line; do
+        LIN_LVNAME=$(echo ${line} | awk '{print $2}')
+        LIN_MNTPOINT=$(echo ${line} | awk '{print $3}')
+        if test "${LIN_MNTPOINT}" "!=" "swap"
+        then
+            TEMPORALLY_DIR="/target$(echo ${LIN_MNTPOINT} | sed 's/^\/$//')"
+            mkdir -p ${TEMPORALLY_DIR}
+            mount /dev/mapper/${DMC_POOL}-${DMC_POOL}_${LIN_LVNAME} ${TEMPORALLY_DIR}
+        fi
+    done
 }
 
 dmf_ext4_makefilesystem

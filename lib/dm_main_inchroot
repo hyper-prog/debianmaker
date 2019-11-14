@@ -59,11 +59,6 @@ then
     . /dm_inchroot_lib/dm_chr_zfssetparameters
 fi
 
-if test "${DMC_FSTYPE}" = "ext4"
-then
-    . /dm_inchroot_lib/dm_chr_lvmswapon
-fi
-
 . /dm_inchroot_lib/dm_chr_setrootpassword
 . /dm_inchroot_lib/dm_chr_installssh
 

@@ -2,10 +2,42 @@
 
 function dmf_ask_fstype {
     local FSTYPE_R
+    local AGREEOK_R
     read -e -p "Filesystem on the disks <zfs|ext4> [${DMC_FSTYPE}]:" FSTYPE_R
     if test -n "${FSTYPE_R}"
     then
         DMC_FSTYPE="${FSTYPE_R}"
+    fi
+
+    if test "${DMC_FSTYPE}" "=" "ext4"
+    then
+        if test -f lvm_volumes
+        then
+            echo ""
+            echo "The following lvm logical volumes will be created"
+            echo "----------------------------------------"
+            cat lvm_volumes | sort | grep -v '^#' | grep -v '^\s*$'
+            echo "----------------------------------------"
+            read -e -p "Do you accept this <y|n> [y]:" AGREEOK_R
+            if test -n "${AGREEOK_R}"
+            then
+                if test "${AGREEOK_R}" "!=" "y"
+                then
+                    echo "*** Please edit the lvm_volumes file according to your needs! ***"
+                    exit 0
+                fi
+            fi
+        else
+            echo "*** The lvm_volumes file is missing! ***"
+            exit 1
+        fi
+
+    elif test "${DMC_FSTYPE}" "=" "zfs"
+    then
+        echo "ZFS is the king! :-)"
+    else
+        echo "*** Unknown filesystem type! ***"
+        exit 1
     fi
 }
 

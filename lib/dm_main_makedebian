@@ -50,6 +50,7 @@ fi
 if test "${DMC_FSTYPE}" = "ext4"
 then
     . ./lib/dm_ext4_filesystemsettings
+    . ./lib/dm_ext4_lvmswapon
 fi
 
 . ./lib/dm_oset_mapdevprocsys

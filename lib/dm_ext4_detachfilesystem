@@ -1,9 +1,18 @@
 #!/bin/bash
 
 function dmf_ext4_detachfilesystem {
-    umount /target/var/log
-    umount /target/var
-    umount /target
+
+    cat lvm_volumes | grep -v '^#' | grep -v '^\s*$' | sort -r | \
+    while IFS= read -r line; do
+        LIN_LVNAME=$(echo ${line} | awk '{print $2}')
+        LIN_MNTPOINT=$(echo ${line} | awk '{print $3}')
+        if test "${LIN_MNTPOINT}" "!=" "swap"
+        then
+            TEMPORALLY_DIR="/target$(echo ${LIN_MNTPOINT} | sed 's/^\/$//')"
+            umount ${TEMPORALLY_DIR}
+        fi
+    done
+
 }
 
 dmf_ext4_detachfilesystem
