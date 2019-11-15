@@ -2,11 +2,29 @@
 
 function dmf_ask_boottype {
     local BOOTTYPE_R
-    read -e -p "Set the boot type of the system <bios|efi> [${DMC_BOOTTYPE}]:" BOOTTYPE_R
+    read -e -p "Set the boot type of the system <b|bios|e|efi> [${DMC_BOOTTYPE}]:" BOOTTYPE_R
     if test -n "${BOOTTYPE_R}"
     then
-        DMC_BOOTTYPE="${BOOTTYPE_R}"
+        if test "${BOOTTYPE_R}" "=" "e"
+        then
+            DMC_BOOTTYPE="efi"
+        elif test "${BOOTTYPE_R}" "=" "b"
+        then
+            DMC_BOOTTYPE="bios"
+        else
+            DMC_BOOTTYPE="${BOOTTYPE_R}"
+        fi
     fi
+
+    if test "${DMC_BOOTTYPE}" "!=" "bios"
+    then
+        if test "${DMC_BOOTTYPE}" "!=" "efi"
+        then
+            echo "*** Wrong boot type! ***"
+            exit 1
+        fi
+    fi
+
 }
 
 dmf_ask_boottype

@@ -3,10 +3,27 @@
 function dmf_ask_fstype {
     local FSTYPE_R
     local AGREEOK_R
-    read -e -p "Filesystem on the disks <zfs|ext4> [${DMC_FSTYPE}]:" FSTYPE_R
+    read -e -p "Filesystem on the disks <z|zfs|e|ext4> [${DMC_FSTYPE}]:" FSTYPE_R
     if test -n "${FSTYPE_R}"
     then
-        DMC_FSTYPE="${FSTYPE_R}"
+        if test "${FSTYPE_R}" "=" "z"
+        then
+            DMC_FSTYPE="zfs"
+        elif test "${FSTYPE_R}" "=" "e"
+        then
+            DMC_FSTYPE="ext4"
+        else
+            DMC_FSTYPE="${FSTYPE_R}"
+        fi
+    fi
+
+    if test "${DMC_FSTYPE}" "!=" "zfs"
+    then
+        if test "${DMC_FSTYPE}" "!=" "ext4"
+        then
+            echo "*** Wrong filesystem type! ***"
+            exit 1
+        fi
     fi
 
     if test "${DMC_FSTYPE}" "=" "ext4"
