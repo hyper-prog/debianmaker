@@ -2,7 +2,7 @@
 
 function dmf_ext4_detachfilesystem {
 
-    cat lvm_volumes | grep -v '^#' | grep -v '^\s*$' | sort -r | \
+    cat ${DMC_LVMVOLFILE} | grep -v '^#' | grep -v '^\s*$' | sort -r | \
     while IFS= read -r line; do
         LIN_LVNAME=$(echo ${line} | awk '{print $2}')
         LIN_MNTPOINT=$(echo ${line} | awk '{print $3}')

@@ -37,4 +37,5 @@ export DMC_ROOTPSWD=""
 
 # ######################################################################################
 
-export DMC_RESERVERDDISKTAIL="20M"    # Reserved space on disk end
+export DMC_RESERVERDDISKTAIL="20M"     # Reserved space on disk end
+export DMC_LVMVOLFILE="lvm_volumes"    # The file which contains the table of lvm volumes

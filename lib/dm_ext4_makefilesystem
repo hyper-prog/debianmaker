@@ -33,7 +33,7 @@ function dmf_ext4_makefilesystem {
     sleep 2
 
     echo ">>> Create volumes on LVM ..."
-    cat lvm_volumes | grep -v '^#' | grep -v '^\s*$' | \
+    cat ${DMC_LVMVOLFILE} | grep -v '^#' | grep -v '^\s*$' | \
     while IFS= read -r line; do
         LIN_LVNAME=$(echo ${line} | awk '{print $2}')
         LIN_MNTPOINT=$(echo ${line} | awk '{print $3}')
@@ -51,7 +51,7 @@ function dmf_ext4_makefilesystem {
 
     sleep 2
     echo ">>> Formatting ext4 filesystems..."
-    cat lvm_volumes | grep -v '^#' | grep -v '^\s*$' | \
+    cat ${DMC_LVMVOLFILE} | grep -v '^#' | grep -v '^\s*$' | \
     while IFS= read -r line; do
         LIN_LVNAME=$(echo ${line} | awk '{print $2}')
         LIN_MNTPOINT=$(echo ${line} | awk '{print $3}')
@@ -74,7 +74,7 @@ function dmf_ext4_makefilesystem {
     # FSUUIDOF_VARLOG=$(blkid -s UUID -o value /dev/mapper/${DMC_POOL}-${DMC_POOL}_vol_varlog)
 
     echo ">>> Mounting filesystems..."
-    cat lvm_volumes | grep -v '^#' | grep -v '^\s*$' | sort | \
+    cat ${DMC_LVMVOLFILE} | grep -v '^#' | grep -v '^\s*$' | sort | \
     while IFS= read -r line; do
         LIN_LVNAME=$(echo ${line} | awk '{print $2}')
         LIN_MNTPOINT=$(echo ${line} | awk '{print $3}')

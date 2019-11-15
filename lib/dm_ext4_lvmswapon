@@ -2,7 +2,7 @@
 
 function dmf_chr_lvmswapon {
 
-   cat lvm_volumes | grep -v '^#' | grep -v '^\s*$' | \
+   cat ${DMC_LVMVOLFILE} | grep -v '^#' | grep -v '^\s*$' | \
     while IFS= read -r line; do
         LIN_LVNAME=$(echo ${line} | awk '{print $2}')
         LIN_MNTPOINT=$(echo ${line} | awk '{print $3}')

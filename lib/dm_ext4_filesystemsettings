@@ -9,7 +9,7 @@ function dmf_ext4_filesystemsettings {
         mdadm --detail --scan > /target/etc/mdadm.conf
     fi
 
-    cat lvm_volumes | grep -v '^#' | grep -v '^\s*$' | sort | \
+    cat ${DMC_LVMVOLFILE} | grep -v '^#' | grep -v '^\s*$' | sort | \
     while IFS= read -r line; do
         LIN_SEQNUM=$(echo ${line} | awk '{print $1}')
         LIN_LVNAME=$(echo ${line} | awk '{print $2}')

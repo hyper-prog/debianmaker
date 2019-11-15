@@ -11,24 +11,24 @@ function dmf_ask_fstype {
 
     if test "${DMC_FSTYPE}" "=" "ext4"
     then
-        if test -f lvm_volumes
+        if test -f ${DMC_LVMVOLFILE}
         then
             echo ""
             echo "The following lvm logical volumes will be created"
-            echo "----------------------------------------"
-            cat lvm_volumes | sort | grep -v '^#' | grep -v '^\s*$'
-            echo "----------------------------------------"
+            echo "----------------------------------------------"
+            cat ${DMC_LVMVOLFILE} | sort | grep -v '^#' | grep -v '^\s*$'
+            echo "----------------------------------------------"
             read -e -p "Do you accept this <y|n> [y]:" AGREEOK_R
             if test -n "${AGREEOK_R}"
             then
                 if test "${AGREEOK_R}" "!=" "y"
                 then
-                    echo "*** Please edit the lvm_volumes file according to your needs! ***"
+                    echo "*** Please edit the ${DMC_LVMVOLFILE} file according to your needs! ***"
                     exit 0
                 fi
             fi
         else
-            echo "*** The lvm_volumes file is missing! ***"
+            echo "*** The ${DMC_LVMVOLFILE} file is missing! ***"
             exit 1
         fi
 
