@@ -18,6 +18,11 @@ function dmf_ask_disks {
         done
         DMC_DISKS="${DISKLINELIST}"
     fi
+
+    echo ""
+    echo "***********************************************************"
+    echo "* CAUTION: ALL DATA ON THE DISKS BELOW WILL BE DESTROYED! *"
+    echo "***********************************************************"
     read -e -p "List of the disks under /dev to use [${DMC_DISKS}]:" DISKS_R
     if test -n "${DISKS_R}"
     then

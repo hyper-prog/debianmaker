@@ -4,11 +4,11 @@ function dmf_ask_settings {
     . ./lib/dm_ask_servername
     . ./lib/dm_ask_domain
     . ./lib/dm_ask_targetregion
+    . ./lib/dm_ask_disks
     . ./lib/dm_ask_fstype
     . ./lib/dm_ask_macaddress
     . ./lib/dm_ask_ifacename
     . ./lib/dm_ask_ipsettings
-    . ./lib/dm_ask_disks
     . ./lib/dm_ask_raidspec
     . ./lib/dm_ask_poolname
     . ./lib/dm_ask_fscompression
