@@ -56,7 +56,6 @@ fi
 if test "${DMC_FSTYPE}" = "zfs"
 then
     . /dm_inchroot_lib/dm_chr_zfsswapon
-    . /dm_inchroot_lib/dm_chr_zfssetparameters
 fi
 
 . /dm_inchroot_lib/dm_chr_setrootpassword

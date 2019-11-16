@@ -1,0 +1,18 @@
+# ZFS datasets and settings
+#V = Dataset name
+#                V = Mount point of the dataset
+#                    The "none" here involve the "canmount=off" option
+#                                  V = dataset options
+#
+ <zfsroot>       none              reservation=10G
+ <rootfs>        /                 refreservation=2G,refquota=10G
+ var             none              reservation=3G,quota=15G
+ var/lib         none              reservation=1G,quota=5G
+ var/lib/apt     /var/lib/apt      none
+ var/lib/dpkg    /var/lib/dpkg     exec=on
+ var/log         /var/log          reservation=1G,quota=5G
+ var/tmp         /var/tmp          quota=1G,com.sun:auto-snapshot=false
+ var/cache       /var/cache        quota=3G,com.sun:auto-snapshot=false
+ var/spool       /var/spool        quota=1G
+ tmp             /tmp              quota=1G,com.sun:auto-snapshot=false,exec=on
+ root            /root             reservation=1G,exec=on

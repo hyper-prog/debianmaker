@@ -1,9 +1,41 @@
 #!/bin/bash
 
+function dmf_optlsttoopts {
+    OPTIONLIST="$1"
+    CURRENTOPTS="$2"
+    for zoneopt in $(echo "${OPTIONLIST}" | sed 's/,/ /g')
+    do
+        if test "${zoneopt}" "!=" "none"
+        then
+            SEPARE=""
+            if test "${CURRENTOPTS}" "!=" ""
+            then
+                SEPARE=" "
+            fi
+            PREV="${CURRENTOPTS}"
+            CURRENTOPTS="${PREV}${SEPARE}-o ${zoneopt}"
+        fi
+    done
+    echo "${CURRENTOPTS}"
+}
+
+function dmf_getzfsopts_fordts {
+    FORDATASET="$1"
+    CURRENTOPTS="$2"
+    DATASETOPTIONS=$(cat ${DMC_ZFSDTSETFILE} | \
+                     grep -v '^#' | grep -v '^\s*$' | grep "^\s*${FORDATASET}" | \
+                     awk '{print $3}')
+    if test "${DATASETOPTIONS}" "!=" ""
+    then
+        echo $(dmf_optlsttoopts "${DATASETOPTIONS}" "${CURRENTOPTS}")
+    fi
+}
+
 function dmf_zfs_makefilesystem {
     local PARTS
     PARTS=$(for disk in ${DMC_DISKS} ; do echo -n "/dev/disk/by-partlabel/${disk}-data "; done)
 
+    echo ">>> Creating ZFS pool ..."
     mkdir -p /target
     zpool create -f \
         -o ashift=12 \
@@ -14,32 +46,48 @@ function dmf_zfs_makefilesystem {
         -O mountpoint=/ \
         -R /target ${DMC_POOL} ${DMC_RAIDSPEC} ${PARTS}
 
-    sleep 1
+    sleep 2
     echo "================== ZPOOL CREATED =================="
     zpool status
     sleep 2
 
-    zfs create -o canmount=off -o mountpoint=none ${DMC_POOL}/ROOT
-    zfs create -o canmount=noauto -o mountpoint=/ -o exec=on -o setuid=on -o devices=on ${DMC_POOL}/ROOT/${DMC_DIST}
+    echo ">>> Creating root datasets ..."
+    ZFSROOTOPTS=$(dmf_getzfsopts_fordts "<zfsroot>" "-o canmount=off -o mountpoint=none")
+    echo "zfs create ${ZFSROOTOPTS} ${DMC_POOL}/ROOT"
+    zfs create ${ZFSROOTOPTS} ${DMC_POOL}/ROOT
+
+    ZFSROOTFSOPTS=$(dmf_getzfsopts_fordts "<rootfs>" "-o canmount=noauto -o mountpoint=/ -o exec=on -o setuid=on -o devices=on")
+    echo "zfs create ${ZFSROOTFSOPTS} ${DMC_POOL}/ROOT/${DMC_DIST}"
+    zfs create ${ZFSROOTFSOPTS} ${DMC_POOL}/ROOT/${DMC_DIST}
+
     zfs mount ${DMC_POOL}/ROOT/${DMC_DIST}
     zpool set bootfs=${DMC_POOL}/ROOT/${DMC_DIST} ${DMC_POOL}
 
     zfs set exec=off ${DMC_POOL}
     zfs set setuid=off ${DMC_POOL}
     zfs set devices=off ${DMC_POOL}
+    zfs set acltype=posixacl ${DMC_POOL}
 
-    zfs create -o canmount=off ${DMC_POOL}/var
-    zfs create -o canmount=off ${DMC_POOL}/var/lib
-    zfs create ${DMC_POOL}/var/lib/apt
-    zfs create -o exec=on ${DMC_POOL}/var/lib/dpkg
-    zfs create ${DMC_POOL}/var/log
-    zfs create -o com.sun:auto-snapshot=false ${DMC_POOL}/var/tmp
-    zfs create -o com.sun:auto-snapshot=false ${DMC_POOL}/var/cache
-    zfs create ${DMC_POOL}/var/spool
-    zfs create -o com.sun:auto-snapshot=false -o exec=on ${DMC_POOL}/tmp
-    zfs create -o exec=on ${DMC_POOL}/root
-    zfs create -o mountpoint=/home ${DMC_POOL}/home
-    zfs create -o mountpoint=/srv ${DMC_POOL}/srv
+    echo ">>> Creating other user defined datasets ..."
+    cat ${DMC_ZFSDTSETFILE} | grep -v '^#' | grep -v '^\s*$' | \
+    while IFS= read -r line; do
+        LIN_DATASETNAME=$(echo ${line} | awk '{print $1}')
+        LIN_MOUNTPOINT=$(echo ${line} | awk '{print $2}')
+        LIN_OPTIONS=$(echo ${line} | awk '{print $3}')
+
+        INITIALOPTS=""
+        if test "${LIN_MOUNTPOINT}" "=" "none"
+        then
+            INITIALOPTS="-o canmount=off"
+        fi
+
+        CURRENTOPTS=$(dmf_optlsttoopts "${LIN_OPTIONS}" "${INITIALOPTS}")
+        echo "zfs create ${CURRENTOPTS} ${DMC_POOL}/${LIN_DATASETNAME}"
+        zfs create ${CURRENTOPTS} ${DMC_POOL}/${LIN_DATASETNAME}
+    done
+    echo "================== ZFS LIST =================="
+    zfs list
+    echo "=============================================="
 }
 
 dmf_zfs_makefilesystem

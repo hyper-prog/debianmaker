@@ -51,7 +51,29 @@ function dmf_ask_fstype {
 
     elif test "${DMC_FSTYPE}" "=" "zfs"
     then
-        echo "ZFS is the king! :-)"
+        if test -f ${DMC_ZFSDTSETFILE}
+        then
+            echo ""
+            echo "The following zfs datasets will be created"
+            echo "----------------------------------------------"
+            cat ${DMC_ZFSDTSETFILE} | grep -v '^#' | grep -v '^\s*$'
+            echo "----------------------------------------------"
+            echo "(Note: The quotas, reservations and other dataset "
+            echo " options can be changed easily on a running system too)"
+            read -e -p "Do you accept this <y|n> [y]:" AGREEOK_R
+            if test -n "${AGREEOK_R}"
+            then
+                if test "${AGREEOK_R}" "!=" "y"
+                then
+                    echo "*** Please edit the ${DMC_ZFSDTSETFILE} file according to your needs! ***"
+                    exit 0
+                fi
+            fi
+        else
+            echo "*** The ${DMC_ZFSDTSETFILE} file is missing! ***"
+            exit 1
+        fi
+
     else
         echo "*** Unknown filesystem type! ***"
         exit 1
