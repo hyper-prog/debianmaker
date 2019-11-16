@@ -4,8 +4,8 @@ Scripts to create a debian system from a live environment with debootstrap
 This script can debootstrap a Debian Buster system on full ZFS root or
 optionally a softraid-lvm-ext4 disk structure.
 
-** This scripts uses the whole space of the specified target disk, so _all data on this disks will be destroyed_! **
-** Answer with extra caution when the script ask you to specify the disk to use! **
+**This scripts uses the whole space of the specified target disk, so _all data on this disks will be destroyed_!
+Answer with extra caution when the script ask you to specify the disk to use!**
 
 Using
 ------
