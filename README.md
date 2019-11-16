@@ -16,8 +16,8 @@ The script will ask all the necessary settings on start and runs (as much as pos
 Features
 --------
 - The script creates a debian buster system on the target machine.
-- It can install a full ZFS filesystem or SoftwareRAID-Lvm-Ext4
-- The ZFS datasets / Lvm volumes created according a simple table from a config file.
+- It can install a full ZFS filesystem or SoftwareRAID-Lvm-Ext4 disk structure.
+- The ZFS datasets / Lvm volumes are created according a simple table from a config file.
 - The target system can boot via BIOS or UEFI.
 - The script works unattended way. The necessary questions are asked only at the start.
 - The docker can automatically installed.
