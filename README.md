@@ -23,5 +23,5 @@ Features
 - The ZFS datasets / Lvm volumes are created according a simple table from a config file.
 - The target system can boot via BIOS or UEFI.
 - The script works unattended way. The necessary questions are asked only at the start.
-- The docker can automatically installed.
+- The docker and codker-composer can automatically installed.
 - You can configure the scripts to work without any question. (In case you pre-edit the conf file)

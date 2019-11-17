@@ -32,8 +32,9 @@ export DMC_TZAREAANDNAME="America/New_York"
 export DMC_KEYMODELLAYOUTVAR="pc105/us"
 export DMC_NEEDDOCKER="n"              # "n" or "y"
 export DMC_SSHPERMITROOT="yes"         # "no" or "prohibit-password" or "yes"
-
+export DMC_SSHKEYTOAUTHORIZEDKEYS=""   # A file to put into root's .ssh/authorized_keys
 export DMC_ROOTPSWD=""
+export DMC_NEEDREBOOT="n"              # Reboot the system after the install
 
 # ######################################################################################
 

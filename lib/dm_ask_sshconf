@@ -1,0 +1,15 @@
+#!/bin/bash
+
+function dmf_ask_sshconf {
+    local SSHKEYTOAUTHORIZEDKEYS_R
+    read -e -p "SSH key file to copy into root's .ssh/authorized_keys [${DMC_SSHKEYTOAUTHORIZEDKEYS}]:" SSHKEYTOAUTHORIZEDKEYS_R
+    if test -n "${SSHKEYTOAUTHORIZEDKEYS_R}"
+    then
+        if test -f "${SSHKEYTOAUTHORIZEDKEYS_R}"
+        then
+            DMC_SSHKEYTOAUTHORIZEDKEYS="$(realpath ${SSHKEYTOAUTHORIZEDKEYS_R})"
+        fi
+    fi
+}
+
+dmf_ask_sshconf

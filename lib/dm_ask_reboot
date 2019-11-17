@@ -1,0 +1,12 @@
+#!/bin/bash
+
+function dmf_ask_reboot {
+    local NEEDREBOOT_R
+    read -e -p "Reboot the system after the install process finished? <y|n> [${DMC_NEEDREBOOT}]:" NEEDREBOOT_R
+    if test -n "${NEEDREBOOT_R}"
+    then
+        DMC_NEEDREBOOT="${NEEDREBOOT_R}"
+    fi
+}
+
+dmf_ask_reboot

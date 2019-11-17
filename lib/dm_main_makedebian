@@ -57,6 +57,15 @@ fi
 . ./lib/dm_main_startchroot
 . ./lib/dm_oset_unmapdevprocsys
 
+if test "${DMC_SSHKEYTOAUTHORIZEDKEYS}" "!=" ""
+then
+    if test -f "${DMC_SSHKEYTOAUTHORIZEDKEYS}"
+    then
+        mkdir -p /target/root/.ssh/
+        cat ${DMC_SSHKEYTOAUTHORIZEDKEYS} >> /target/root/.ssh/authorized_keys
+    fi
+fi
+
 if test "${DMC_FSTYPE}" = "zfs"
 then
     . ./lib/dm_zfs_detachfilesystem
@@ -70,3 +79,11 @@ sync
 echo " ============================================================= "
 echo " = It seems my work is over, Your system is ready to boot    = "
 echo " ============================================================= "
+
+if test "${DMC_NEEDREBOOT}" "=" "y"
+then
+    sleep 1
+    reboot -f
+else
+    echo " Run \"reboot -f\" to boot your system!"
+fi

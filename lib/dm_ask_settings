@@ -16,8 +16,10 @@ function dmf_ask_settings {
     . ./lib/dm_ask_extrapackages
     . ./lib/dm_ask_timezones
     . ./lib/dm_ask_keyboard
+    . ./lib/dm_ask_sshconf
     . ./lib/dm_ask_docker
     . ./lib/dm_ask_password
+    . ./lib/dm_ask_reboot
 }
 
 dmf_ask_settings
