@@ -25,3 +25,4 @@ Features
 - The script works unattended way. The necessary questions are asked only at the start.
 - The docker and codker-composer can automatically installed.
 - You can configure the scripts to work without any question. (In case you pre-edit the conf file)
+- You can add an ssh public key to put into the root's ssh directory as authorised_keys
