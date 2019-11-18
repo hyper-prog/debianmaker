@@ -70,6 +70,7 @@ function dmf_zfs_makefilesystem {
 
     echo ">>> Creating other user defined datasets ..."
     cat ${DMC_ZFSDTSETFILE} | grep -v '^#' | grep -v '^\s*$' | \
+        grep -v '^\s*<rootfs>\s*' | grep -v '^\s*<zfsroot>\s*' | \
     while IFS= read -r line; do
         LIN_DATASETNAME=$(echo ${line} | awk '{print $1}')
         LIN_MOUNTPOINT=$(echo ${line} | awk '{print $2}')
