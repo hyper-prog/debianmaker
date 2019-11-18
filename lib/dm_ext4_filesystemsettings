@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 function dmf_ext4_filesystemsettings {
     local DISKNUM
     DISKNUM=$(echo "${DISKS}"|wc -w)

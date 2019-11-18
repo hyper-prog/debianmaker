@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 export LC_CTYPE=C
 
 . /dm_inchroot_lib/dm_uni_fullupgrade

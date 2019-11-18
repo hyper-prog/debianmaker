@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 function dmf_ask_ipsettings {
     local IPSRC_R
     local IPADDRESS_R

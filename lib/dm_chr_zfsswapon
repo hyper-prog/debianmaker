@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 function dmf_chr_zfsswapon {
     zfs create -V 1G -b $(getconf PAGESIZE) -o compression=off -o logbias=throughput -o sync=always -o primarycache=metadata -o secondarycache=none -o com.sun:auto-snapshot=false ${DMC_POOL}/swap
     mkswap /dev/zvol/${DMC_POOL}/swap

@@ -3,8 +3,10 @@
 set -e
 
 function dmf_uni_fullupgrade {
+    set +e
     apt update
     apt -y full-upgrade
+    set -e
 }
 
 dmf_uni_fullupgrade

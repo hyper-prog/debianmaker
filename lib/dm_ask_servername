@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 function dmf_ask_servername {
     local SERVERNAME_R
     read -e -p "Hostname of the computer [${DMC_SERVERNAME}]:" SERVERNAME_R

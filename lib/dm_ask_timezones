@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 function dmf_ask_timezones {
     local TZAREAANDNAME_R
     read -e -p "Timezone area/name [${DMC_TZAREAANDNAME}]:" TZAREAANDNAME_R

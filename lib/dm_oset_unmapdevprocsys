@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 function dmf_oset_unmapdevprocsys {
     umount -Rfl /target/dev
     umount -Rfl /target/sys

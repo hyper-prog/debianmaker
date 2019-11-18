@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 function dmf_chr_grubsetbiosboot {
     local DISKDEVS
     DISKDEVS=$(for disk in ${DMC_DISKS} ; do echo -n "/dev/${disk} " ; done | sed -e 's@ /@, /@g')

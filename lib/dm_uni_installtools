@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 function dmf_uni_installtools {
     apt -y install gawk sed gdisk mdadm lvm2
 }

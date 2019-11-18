@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 function dmf_oset_mapdevprocsys {
     mount --rbind /dev /target/dev
     mount --rbind /proc /target/proc

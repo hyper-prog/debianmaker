@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 cp ./lib/dm_main_inchroot /target/
 mkdir -p /target/dm_inchroot_lib
 cp  ./lib/* /target/dm_inchroot_lib/

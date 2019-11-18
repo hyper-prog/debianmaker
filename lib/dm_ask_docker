@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 function dmf_ask_docker {
     local NEEDDOCKER_R
     read -e -p "Do you need docker to be installed? <y|n> [${DMC_NEEDDOCKER}]:" NEEDDOCKER_R

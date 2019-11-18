@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 function dmf_ask_disks {
     local DISKS_R
     local DISKRAWLIST

@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 function dmf_ask_domain {
     local DOMAIN_R
     read -e -p "Network domain name [${DMC_DOMAIN}]:" DOMAIN_R

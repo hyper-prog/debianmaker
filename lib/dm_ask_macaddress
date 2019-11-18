@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 function dmf_ask_macaddress {
     local MAC_R
     if test -z "${DMC_MAC}"

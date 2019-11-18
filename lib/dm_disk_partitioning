@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 function dmf_disk_partitioning {
     for disk in ${DMC_DISKS}; do
     sgdisk -Z \

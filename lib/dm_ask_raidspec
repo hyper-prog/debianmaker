@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 function dmf_ask_raidspec {
     local DISKNUM
     local RAIDSPEC_R

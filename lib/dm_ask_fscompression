@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 function dmf_ask_fscompression {
     local ZFSCOMP_R
     if test "${DMC_FSTYPE}" = "zfs"

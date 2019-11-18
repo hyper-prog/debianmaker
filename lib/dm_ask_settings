@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 function dmf_ask_settings {
     . ./lib/dm_ask_servername
     . ./lib/dm_ask_domain

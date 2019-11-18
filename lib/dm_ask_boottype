@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 function dmf_ask_boottype {
     local BOOTTYPE_R
     read -e -p "Set the boot type of the system <b|bios|e|efi> [${DMC_BOOTTYPE}]:" BOOTTYPE_R

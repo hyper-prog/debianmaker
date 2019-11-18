@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 function dmf_ask_keyboard {
     local KEYMODELLAYOUTVAR_R
     read -e -p "Keyboard model/layout/variant [${DMC_KEYMODELLAYOUTVAR}]:" KEYMODELLAYOUTVAR_R

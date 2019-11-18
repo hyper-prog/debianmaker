@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 function dmf_optlsttoopts {
     OPTIONLIST="$1"
     CURRENTOPTS="$2"

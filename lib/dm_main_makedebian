@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 # Debian bootstrapper
 # Author: Peter Deak (hyper80@gmail.com)
 # License: GPL,  No warrantly, use at you own risk!
@@ -19,7 +21,7 @@ then
 fi
 
 . ./lib/dm_oset_derivedsettings
-. ./lib/dm_uni_fullupgrade
+. ./lib/dm_uni_efullupgrade
 . ./lib/dm_uni_installtools
 
 if test "${DMC_FSTYPE}" = "zfs"

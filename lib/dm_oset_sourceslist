@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 function dmf_oset_sourceslist {
     local FTOW
     FTOW="/target/etc/apt/sources.list"

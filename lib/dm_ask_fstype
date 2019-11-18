@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 function dmf_ask_fstype {
     local FSTYPE_R
     local AGREEOK_R

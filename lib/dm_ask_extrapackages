@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 function dmf_ask_extrapackages {
     local PACKAGES_R
     read -e -p "Extra packages to install [${DMC_PACKAGES}]:" PACKAGES_R

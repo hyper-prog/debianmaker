@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 function dmf_oset_ensuretmprights {
     if test -d "/target/tmp"
     then

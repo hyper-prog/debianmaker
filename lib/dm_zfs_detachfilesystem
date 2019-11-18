@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 function dmf_zfs_detachfilesystem {
     zpool export ${DMC_POOL}
 }

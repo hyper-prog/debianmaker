@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 function dmf_ask_sshconf {
     local SSHKEYTOAUTHORIZEDKEYS_R
     read -e -p "SSH key file to copy into root's .ssh/authorized_keys [${DMC_SSHKEYTOAUTHORIZEDKEYS}]:" SSHKEYTOAUTHORIZEDKEYS_R

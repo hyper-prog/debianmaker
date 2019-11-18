@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 function dmf_zfs_zfsforlive {
     local KVER
     local KREL
