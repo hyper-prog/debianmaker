@@ -44,7 +44,7 @@ then
     apt -y install lvm2 mdadm
 fi
 
-apt -y install gdisk dosfstools git rsync keyboard-configuration kbd man ${DMC_PACKAGES}
+apt -y install gdisk dosfstools git rsync keyboard-configuration kbd man bash-completion ${DMC_PACKAGES}
 
 if test "${DMC_BOOTTYPE}" = "bios"
 then
