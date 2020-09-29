@@ -5,8 +5,9 @@ set -e
 function dmf_zfs_zfsforlive {
     local KVER
     local KREL
-    KVER=$(dpkg -l linux-image-amd64-grml | tail -1 | cut -d' ' -f4)
+    KVER=$(dpkg -l linux-image-amd64 | tail -1 | cut -d' ' -f4)
     KREL=$(uname -r)
+    apt -y install build-essential
     apt -y --allow-downgrades install linux-libc-dev:amd64=$KVER linux-headers-${KREL}=${KVER}
     apt -y install zfsutils-linux zfs-zed dkms zfs-dkms spl-dkms spl
     modprobe zfs

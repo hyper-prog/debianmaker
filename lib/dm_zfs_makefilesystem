@@ -46,6 +46,8 @@ function dmf_zfs_makefilesystem {
         -O compression=${DMC_ZFSCOMP} \
         -O normalization=formD \
         -O mountpoint=/ \
+        -o feature@spacemap_v2=disabled \
+        -o feature@project_quota=disabled \
         -R /target ${DMC_POOL} ${DMC_RAIDSPEC} ${PARTS}
 
     sleep 2
