@@ -2,6 +2,13 @@
 
 set -e
 
+CURRENT_UNAME_MACHINE=`uname -m`
+if test "${CURRENT_UNAME_MACHINE}" "!=" "x86_64"
+then
+    echo "Please boot 64 bit (x86_64) live system!";
+    exit 0;
+fi
+
 cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
 echo "Let's rock!"
 . ./lib/dm_main_makedebian
